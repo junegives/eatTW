@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "122089352185",
+    "firebase_url": "https://eattw-9bd91.firebaseio.com",
+    "project_id": "eattw-9bd91",
+    "storage_bucket": "eattw-9bd91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122089352185:android:cb1c1c6a8871aebecdeb28",
+        "android_client_info": {
+          "package_name": "com.example.eattw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "122089352185-rk9cpkl6m62ab4eg5ov1pu1s833jl97q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKXU4ZyWXgehhkwotlmBB_D53FqITpHLA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "122089352185-rk9cpkl6m62ab4eg5ov1pu1s833jl97q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
