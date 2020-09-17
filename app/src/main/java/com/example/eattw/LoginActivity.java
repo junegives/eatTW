@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,22 +41,33 @@ public class LoginActivity extends AppCompatActivity {
                 String email = et_email_login.getText().toString().trim();
                 String password = et_password_login.getText().toString().trim();
 
-                firebaseAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                //성공했을 때
-                                if(task.isSuccessful()){
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                if(email.equals("")){
+                    Toast.makeText(LoginActivity.this, "이메일을 입력하세요", Toast.LENGTH_SHORT).show();
+                    et_email_login.requestFocus();
+                }
+                else if(password.equals("")){
+                    Toast.makeText(LoginActivity.this, "비밀번호를 입력하세요", Toast.LENGTH_SHORT).show();
+                    et_password_login.requestFocus();
+                }
+                else {
+                    firebaseAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    //성공했을 때
+                                    if (task.isSuccessful()) {
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    //실패했을 때
+                                    else {
+                                        Toast.makeText(LoginActivity.this, "이메일 혹은 패스워드 입력이 잘못되었습니다.", Toast.LENGTH_SHORT).show();
+                                        et_email_login.requestFocus();
+                                    }
                                 }
-                                //실패했을 때
-                                else{
-                                    Toast.makeText(LoginActivity.this, "이메일 혹은 패스워드 입력이 잘못되었습니다.", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
+                            });
+                }
             }
         });
 
