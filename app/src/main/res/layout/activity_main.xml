@@ -6,94 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:itemIconTint="#000000"
+        app:itemTextColor="#000000"
+        app:menu="@menu/bottom_menu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <RadioGroup
-            android:id="@+id/radiogroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkedButton="@+id/btnRadio_vege"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+    <FrameLayout
+        android:id="@+id/main_frame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
 
-            <RadioButton
-                android:id="@+id/radiobtn_Taipei"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/radiobutton"
-                android:button="@null"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="5dp"
-                android:text="타이페이"
-                android:textSize="15dp"
-                />
-
-            <RadioButton
-                android:id="@+id/radiobtn_Kaohsiung"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/radiobutton"
-                android:button="@null"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="5dp"
-                android:text="가오슝"
-                android:textSize="15dp" />
-
-            <RadioButton
-                android:id="@+id/radiobtn_Taitung"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/radiobutton"
-                android:button="@null"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="5dp"
-                android:text="타이중"
-                android:textSize="15dp" />
-
-            <RadioButton
-                android:id="@+id/radiobtn_Tainan"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/radiobutton"
-                android:button="@null"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="5dp"
-                android:text="타이난"
-                android:textSize="15dp" />
-
-            <RadioButton
-                android:id="@+id/radiobtn_etc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radiobutton"
-                android:button="@null"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="5dp"
-                android:text="기타"
-                android:textSize="15dp" />
-
-        </RadioGroup>
-    </HorizontalScrollView>
+    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
