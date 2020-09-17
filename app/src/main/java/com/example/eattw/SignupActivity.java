@@ -45,7 +45,7 @@ public class SignupActivity extends AppCompatActivity {
                 //trim() = 공백인 부분을 제거함
 
                 if(!password.equals(password_check)){
-                    Toast.makeText(SignupActivity.this, "비밀번호를 확인하세요", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignupActivity.this, "비밀번호가 일치하지 않습니다", Toast.LENGTH_LONG).show();
                 }
                 else {
                     firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -54,14 +54,14 @@ public class SignupActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     //성공했을 때
                                     if(task.isSuccessful()){
-                                        Toast.makeText(SignupActivity.this, "회원가입 성공", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SignupActivity.this, "가입 성공", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }
                                     //실패했을 때
                                     else{
-                                        Toast.makeText(SignupActivity.this, "회원가입 실패", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SignupActivity.this, "가입 실패", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
                                 }

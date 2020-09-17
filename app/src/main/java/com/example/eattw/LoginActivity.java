@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
+                                    finish();
                                 }
                                 //실패했을 때
                                 else{
