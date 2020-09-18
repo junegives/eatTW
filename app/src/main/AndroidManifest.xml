@@ -3,6 +3,7 @@
     package="com.example.eattw">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -11,16 +12,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".PicTransActivity"/>
         <activity android:name=".MainActivity">
+        </activity>
+        <activity android:name=".InitialActivity" />
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".InitialActivity" />
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".SignupActivity"/>
+        <activity android:name=".SignupActivity" />
+
+        <meta-data
+            android:name="com.goolge.android.gms.vision.DEPENDENCIES"
+            android:value="orc" />
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="ocr" />
     </application>
 
 </manifest>
