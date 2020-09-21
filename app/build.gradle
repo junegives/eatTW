@@ -10,6 +10,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,7 +41,7 @@ dependencies {
 //    implementation 'com.google.code.findbugs:jsr305:2.0.1'
 //    implementation 'commons-io:commons-io:2.5'
     //Add Library
-    implementation 'com.google.android.gms:play-services-vision:+'
+    //implementation 'com.google.android.gms:play-services-vision:+'
 
     //파이어베이스 번역
     implementation 'com.google.firebase:firebase-ml-natural-language:22.0.0'
@@ -51,10 +52,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:+'
 
     //카메라
-    implementation 'com.wonderkiln:camerakit:+'
+    implementation 'com.wonderkiln:camerakit:0.13.1'
 
     //Spot Dialog
+
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
+
+    implementation 'com.android.support:multidex:1.0.3'
 
 }
 

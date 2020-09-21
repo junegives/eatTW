@@ -27,7 +27,7 @@ public class TranslateFragment  extends Fragment {
         btn_picture_go = (Button)view.findViewById(R.id.btn_picture_go);
         btn_picture_go.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                Intent intent = new Intent(getActivity(), PicTransActivity.class);
+                Intent intent = new Intent(getActivity(), PicActivity.class);
                 startActivity(intent);
             }
         });

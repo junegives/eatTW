@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="만두 ( 만두 )"/>
+                android:text="샤오롱바오 ( 小籠包 )"/>
 
             <TextView
                 android:id="@+id/word_2"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/word_1"
-                android:text="만두 ( 만두 )"/>
+                android:text="우육면 ( 만두 )"/>
 
             <TextView
                 android:id="@+id/word_3"
@@ -158,9 +158,6 @@
                 android:layout_marginLeft="20dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <
-
 
     </LinearLayout>
 
