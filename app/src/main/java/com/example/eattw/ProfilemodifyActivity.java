@@ -3,7 +3,6 @@ package com.example.eattw;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
@@ -17,23 +16,18 @@ import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,7 +47,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 
-public class InitialActivity extends AppCompatActivity {
+public class ProfilemodifyActivity extends AppCompatActivity {
 
     private CircleImageView image_profile;
     private EditText et_nick;
@@ -84,10 +78,13 @@ public class InitialActivity extends AppCompatActivity {
     //사진 경로
     Uri photoUri = null;
 
+    //사진이 변경되었는지 체크
+    boolean photochanged = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_initial);
+        setContentView(R.layout.activity_profilemodify);
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -104,9 +101,9 @@ public class InitialActivity extends AppCompatActivity {
                 .build();
 
         if(user.getPhotoUrl() != null){
-            Glide.with(InitialActivity.this)
-                .load(user.getPhotoUrl())
-                .into(image_profile);
+            Glide.with(ProfilemodifyActivity.this)
+                    .load(user.getPhotoUrl())
+                    .into(image_profile);
             //image_profile.setImageURI(user.getPhotoUrl());
             photoUri = user.getPhotoUrl();
         }
@@ -136,7 +133,7 @@ public class InitialActivity extends AppCompatActivity {
 
                 if(et_nick.getText().toString().length() == 0){
                     Log.d("profile", "닉네임 공백");
-                    Toast.makeText(InitialActivity.this, "사용할 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfilemodifyActivity.this, "사용할 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
                     et_nick.requestFocus();
                 }
                 else {
@@ -163,7 +160,7 @@ public class InitialActivity extends AppCompatActivity {
 
     private void showDialog(){
 
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(InitialActivity.this);
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ProfilemodifyActivity.this);
 
         bottomSheetDialog.setContentView(R.layout.camera_gallery_dialog);
         bottomSheetDialog.show();
@@ -178,8 +175,8 @@ public class InitialActivity extends AppCompatActivity {
 
                 //권한 설정되어 있는지 먼저 확인
                 //권한이 허용되어있지 않다면 권한요청
-                if(!hasPermissions(InitialActivity.this, PERMISSIONS_CAMERA)){
-                    ActivityCompat.requestPermissions(InitialActivity.this, PERMISSIONS_CAMERA, MULTIPLE_PERMISSIONS);
+                if(!hasPermissions(ProfilemodifyActivity.this, PERMISSIONS_CAMERA)){
+                    ActivityCompat.requestPermissions(ProfilemodifyActivity.this, PERMISSIONS_CAMERA, MULTIPLE_PERMISSIONS);
                 }
 
                 //권한이 허용되어 있다면 다음 화면 진행
@@ -196,8 +193,8 @@ public class InitialActivity extends AppCompatActivity {
 
                 //권한 설정되어 있는지 먼저 확인
                 //권한이 허용되어있지 않다면 권한요청
-                if(!hasPermissions(InitialActivity.this, PERMISSIONS_GALLERY)){
-                    ActivityCompat.requestPermissions(InitialActivity.this, PERMISSIONS_GALLERY, MULTIPLE_PERMISSIONS);
+                if(!hasPermissions(ProfilemodifyActivity.this, PERMISSIONS_GALLERY)){
+                    ActivityCompat.requestPermissions(ProfilemodifyActivity.this, PERMISSIONS_GALLERY, MULTIPLE_PERMISSIONS);
                 }
 
                 //권한이 허용되어 있다면 다음 화면 진행
@@ -227,7 +224,7 @@ public class InitialActivity extends AppCompatActivity {
         try {
             photoFile = createImageFile();
         } catch (IOException e) {
-            //Toast.makeText(InitialActivity.this, "이미지 처리 오류! 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ProfilemodifyActivity.this, "이미지 처리 오류! 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
             finish();
             e.printStackTrace();
         }
@@ -235,7 +232,7 @@ public class InitialActivity extends AppCompatActivity {
         if(photoFile != null){
             //photoUri = Uri.fromFile(photoFile);
             Log.d("이미지", "photoFile != null");
-            photoUri = FileProvider.getUriForFile(InitialActivity.this,
+            photoUri = FileProvider.getUriForFile(ProfilemodifyActivity.this,
                     "com.example.eattw.provider", photoFile);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri); //사진을 찍어 해당 Content uri를 photoUri에 적용시키기 위함
             Log.d("이미지", "photoUri에 집어넣음");
@@ -272,7 +269,7 @@ public class InitialActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) {
-            //Toast.makeText(InitialActivity.this, "이미지 처리 오류! 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ProfilemodifyActivity.this, "이미지 처리 오류! 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
         }
         else if (requestCode == PICK_FROM_GALLERY) {
             if (data == null) {
@@ -282,7 +279,7 @@ public class InitialActivity extends AppCompatActivity {
             cropImage();
         } else if (requestCode == PICK_FROM_CAMERA) {
             cropImage();
-            MediaScannerConnection.scanFile(InitialActivity.this, //앨범에 사진을 보여주기 위해 Scan을 합니다.
+            MediaScannerConnection.scanFile(ProfilemodifyActivity.this, //앨범에 사진을 보여주기 위해 Scan을 합니다.
                     new String[]{photoUri.getPath()}, null,
                     new MediaScannerConnection.OnScanCompletedListener() {
                         public void onScanCompleted(String path, Uri uri) {
@@ -290,8 +287,8 @@ public class InitialActivity extends AppCompatActivity {
                     });
 
         } else if (requestCode == CROP_FROM_CAMERA) {
-            try { // bitmap 형태의 이미지로 가져오기 위해 아래와 같이 작업하였으며 Thumbnail을 추출하였습니다.
-
+            try {
+                // bitmap 형태의 이미지로 가져오기 위해 아래와 같이 작업하였으며 Thumbnail을 추출하였습니다.
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
                 Bitmap thumbImage = ThumbnailUtils.extractThumbnail(bitmap, 256, 256);
                 ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -302,6 +299,8 @@ public class InitialActivity extends AppCompatActivity {
 
                 image_profile.setImageBitmap(thumbImage);
                 Log.d("이미지 경로(thumbImage)", thumbImage.toString());
+
+                photochanged = true;
             } catch (Exception e) {
                 Log.e("ERROR", e.getMessage().toString());
             }
@@ -343,7 +342,7 @@ public class InitialActivity extends AppCompatActivity {
             File folder = new File(Environment.getExternalStorageDirectory() + "/test/");
             File tempFile = new File(folder.toString(), croppedFileName.getName());
 
-            photoUri = FileProvider.getUriForFile(InitialActivity.this,
+            photoUri = FileProvider.getUriForFile(ProfilemodifyActivity.this,
                     "com.example.eattw.provider", tempFile);
 
             Log.d("TestImageUpload","photoUri"+photoUri.toString());
@@ -370,7 +369,7 @@ public class InitialActivity extends AppCompatActivity {
     }
 
     private void uploadFirebase(){
-         //파이어베이스 업로드
+        //파이어베이스 업로드
         // Create a storage reference from our app
         Log.d("TestImageUpload","uploadFirebase() 진입");
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -388,65 +387,77 @@ public class InitialActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         waitingDialog.dismiss();
                         Log.d("profile", "User profile updated.");
-                        Intent intent = new Intent(InitialActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        Toast.makeText(InitialActivity.this, "반갑습니다! " + et_nick.getText().toString() + "님", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 }
             });
         }
         else {
-            Uri file = photoUri;
-            Log.d("TestImageUpload", "Uri file : " + file.toString());
-            Log.d("TestImageUpload", "file.getLastPathSegment() : " + file.getLastPathSegment());
-            final StorageReference riversRef = storageRef.child("images/" + user.getUid() + "/" + file.getLastPathSegment());
-            UploadTask uploadTask = riversRef.putFile(file);
+            if(photochanged != false) {
+                Uri file = photoUri;
+                Log.d("TestImageUpload", "Uri file : " + file.toString());
+                Log.d("TestImageUpload", "file.getLastPathSegment() : " + file.getLastPathSegment());
+                final StorageReference riversRef = storageRef.child("images/" + user.getUid() + "/" + file.getLastPathSegment());
+                UploadTask uploadTask = riversRef.putFile(file);
 
-            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        Log.d("이미지 업로드", "실패");
-                        throw task.getException();
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            Log.d("이미지 업로드", "실패");
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return riversRef.getDownloadUrl();
                     }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            Log.d("TestImageDownload", "성공: " + downloadUri);
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(et_nick.getText().toString())
+                                    .setPhotoUri(downloadUri)
+                                    .build();
 
-                    // Continue with the task to get the download URL
-                    return riversRef.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        Log.d("TestImageDownload", "성공: " + downloadUri);
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setDisplayName(et_nick.getText().toString())
-                                .setPhotoUri(downloadUri)
-                                .build();
-
-                        user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    waitingDialog.dismiss();
-                                    Log.d("profile", "User profile updated.");
-                                    Intent intent = new Intent(InitialActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    Toast.makeText(InitialActivity.this, "반갑습니다! " + et_nick.getText().toString() + "님", Toast.LENGTH_SHORT).show();
-                                    finish();
+                            user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        waitingDialog.dismiss();
+                                        Log.d("profile", "User profile updated.");
+                                        finish();
+                                    }
                                 }
-                            }
-                        });
-                    } else {
-                        // Handle failures
-                        // ...
-                        waitingDialog.dismiss();
-                        Toast.makeText(InitialActivity.this, "프로필 설정에 실패하였습니다.", Toast.LENGTH_SHORT).show();
-                        Log.d("TestImageDownload", "실패");
+                            });
+                        } else {
+                            // Handle failures
+                            // ...
+                            waitingDialog.dismiss();
+                            Toast.makeText(ProfilemodifyActivity.this, "프로필 설정에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                            Log.d("TestImageDownload", "실패");
+                        }
                     }
-                }
-            });
+                });
+            }
+            else{
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(et_nick.getText().toString())
+                        .build();
+
+                user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            waitingDialog.dismiss();
+                            Log.d("profile", "User profile updated.");
+                            finish();
+                        }
+                    }
+                });
+            }
         }
     }
 }

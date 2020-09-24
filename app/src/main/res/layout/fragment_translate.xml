@@ -41,6 +41,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+        android:id="@+id/layout_word"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,6 +161,24 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+
+
+    <!--텍스트 번역-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_word"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/white_round"
+        android:padding="20dp"
+        android:layout_marginTop="20dp">
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

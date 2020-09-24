@@ -39,6 +39,7 @@ public class PicActivity extends AppCompatActivity {
     AlertDialog waitingDialog;
     GraphicOverlay graphicOverlay;
     Button btn_Capture;
+    Button btn_ReCapture;
 
     @Override
     protected void onResume() {
@@ -66,15 +67,26 @@ public class PicActivity extends AppCompatActivity {
         cameraView = (CameraView)findViewById(R.id.camera_view);
         graphicOverlay = (GraphicOverlay)findViewById(R.id.graphic_overlay);
         btn_Capture = (Button)findViewById(R.id.btn_capture);
+        btn_ReCapture = (Button)findViewById(R.id.btn_recapture);
         btn_Capture.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
                 cameraView.start();
                 cameraView.captureImage();
                 graphicOverlay.clear();
 
-                if(btn_Capture.getText()=="재촬영하기"){
-                    btn_Capture.setText("번역하기");
-                }
+                btn_Capture.setVisibility(View.GONE);
+                btn_ReCapture.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btn_ReCapture.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                cameraView.start();
+                cameraView.captureImage();
+                graphicOverlay.clear();
+
+                btn_Capture.setVisibility(View.VISIBLE);
+                btn_ReCapture.setVisibility(View.GONE);
             }
         });
 
@@ -135,6 +147,7 @@ public class PicActivity extends AppCompatActivity {
 
     private void drawTextResult(FirebaseVisionText firebaseVisionText) {
         List<FirebaseVisionText.TextBlock> blocks = firebaseVisionText.getTextBlocks();
+        waitingDialog.dismiss();
 
         if(blocks.size() == 0)
         {
@@ -160,8 +173,5 @@ public class PicActivity extends AppCompatActivity {
                 }
             }
         }
-
-        waitingDialog.dismiss();
-        btn_Capture.setText("재촬영하기");
     }
 }

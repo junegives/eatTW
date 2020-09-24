@@ -4,14 +4,113 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="mypage fragment"
-        android:textSize="40sp"/>
+        android:background="@android:color/white"
+        android:padding="20dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/base_img"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="#F3F3F3"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/mypage_profile_img"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/mandoo_profile"/>
+
+        <TextView
+            android:id="@+id/tv_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/mypage_profile_img"
+            app:layout_constraintStart_toEndOf="@id/mypage_profile_img"
+            app:layout_constraintBottom_toTopOf="@id/layout_follower"
+            android:text="닉네임"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp"
+            android:textColor="@android:color/black"
+            android:background="@android:color/white"/>
+
+        <LinearLayout
+            android:id="@+id/layout_follower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/tv_nickname"
+            app:layout_constraintTop_toBottomOf="@+id/tv_nickname"
+            app:layout_constraintBottom_toBottomOf="@id/mypage_profile_img"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_follower"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="15sp"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="팔로워"
+                android:textSize="15sp"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_following"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/layout_follower"
+            app:layout_constraintTop_toBottomOf="@+id/tv_nickname"
+            app:layout_constraintBottom_toBottomOf="@id/mypage_profile_img"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_following"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="15sp"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="팔로잉"
+                android:textSize="15sp"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_change_profile"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@drawable/whitebox_shadow"
+            android:src="@drawable/ic_modify_646464_24dp"
+            />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -22,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btn_login;
     private Button btn_signup_go;
     FirebaseAuth firebaseAuth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,17 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     //성공했을 때
                                     if (task.isSuccessful()) {
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        user = FirebaseAuth.getInstance().getCurrentUser();
+
+                                        Intent intent = null;
+                                        //이미 닉네임이 설정되었을 때
+                                        if(user.getDisplayName() != null) {
+                                            intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        }
+                                        //닉네임이 설정되지 않았을 때
+                                        else {
+                                            intent = new Intent(LoginActivity.this, InitialActivity.class);
+                                        }
                                         startActivity(intent);
                                         finish();
                                     }

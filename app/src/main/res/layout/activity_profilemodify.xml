@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    tools:context=".InitialActivity">
+    tools:context=".ProfilemodifyActivity">
 
     <TextView
         android:id="@+id/tv_profile"
@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="프로필을 설정해주세요"
+        android:text="내 프로필 수정"
         android:textSize="30sp"
         android:textStyle="bold"
         android:gravity="center_horizontal"/>
