@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="20dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_picture_go"
@@ -12,7 +11,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/white_round"
+        android:background="@android:color/white"
         android:padding="20dp">
 
         <TextView
@@ -40,143 +39,207 @@
             android:textColor="@android:color/white"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_word"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_picture_go"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="많이 번역되는 단어 LIST"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:layout_margin="10dp"/>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/white_round"
-            android:padding="20dp">
-
-            <TextView
-                android:id="@+id/word_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="샤오롱바오 ( 小籠包 )"/>
-
-            <TextView
-                android:id="@+id/word_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/word_1"
-                android:text="우육면 ( 만두 )"/>
-
-            <TextView
-                android:id="@+id/word_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/word_2"
-                android:text="만두 ( 만두 )"/>
-
-            <TextView
-                android:id="@+id/word_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/word_3"
-                android:text="만두 ( 만두 )"/>
-
-            <TextView
-                android:id="@+id/word_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/word_4"
-                android:text="만두 ( 만두 )"/>
-
-            <View
-                android:id="@+id/word_bar"
-                android:layout_width="2dp"
-                android:layout_height="0dp"
-                android:background="@android:color/darker_gray"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <TextView
-                android:id="@+id/word_6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@+id/word_bar"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="만두 ( 만두 )"
-                android:layout_marginLeft="20dp"/>
-
-            <TextView
-                android:id="@+id/word_7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@+id/word_bar"
-                app:layout_constraintTop_toBottomOf="@+id/word_6"
-                android:text="만두 ( 만두 )"
-                android:layout_marginLeft="20dp"/>
-
-            <TextView
-                android:id="@+id/word_8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@+id/word_bar"
-                app:layout_constraintTop_toBottomOf="@+id/word_7"
-                android:text="만두 ( 만두 )"
-                android:layout_marginLeft="20dp"/>
-
-            <TextView
-                android:id="@+id/word_9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="만두 ( 만두 )"
-                app:layout_constraintStart_toEndOf="@+id/word_bar"
-                app:layout_constraintTop_toBottomOf="@+id/word_8"
-                android:layout_marginLeft="20dp"/>
-
-            <TextView
-                android:id="@+id/word_10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="만두 ( 만두 )"
-                app:layout_constraintStart_toEndOf="@+id/word_bar"
-                app:layout_constraintTop_toBottomOf="@+id/word_9"
-                android:layout_marginLeft="20dp"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </LinearLayout>
-
-
-    <!--텍스트 번역-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_word"
+        app:layout_constraintTop_toBottomOf="@+id/layout_picture_go"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/white_round"
-        android:padding="20dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp"
+        android:background="@android:color/white">
+
+            <Button
+                android:id="@+id/input_language"
+                android:layout_width="150dp"
+                android:layout_height="45dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/swap_language"
+                android:text="한국어"
+                android:background="@null"/>
+
+            <ImageButton
+                android:id="@+id/swap_language"
+                android:layout_width="60dp"
+                android:layout_height="45dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/input_language"
+                app:layout_constraintEnd_toStartOf="@id/output_language"
+                android:src="@drawable/ic_swap_horiz_black_24dp"
+                android:background="@null"/>
+
+            <Button
+                android:id="@+id/output_language"
+                android:layout_width="150dp"
+                android:layout_height="45dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/swap_language"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="영어"
+                android:background="@null"/>
+
+        <LinearLayout
+            android:id="@+id/input_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/swap_language"
+            app:layout_constraintTop_toBottomOf="@id/input_language"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:elevation="5dp"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/btn_input_korean"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="한국어"
+                android:background="@android:color/white"/>
+
+            <Button
+                android:id="@+id/btn_input_chinese"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="중국어"
+                android:background="@android:color/white"/>
+
+            <Button
+                android:id="@+id/btn_input_english"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="영어"
+                android:background="@android:color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/output_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/swap_language"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_language"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:elevation="5dp"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/btn_output_korean"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="한국어"
+                android:background="@android:color/white"/>
+
+            <Button
+                android:id="@+id/btn_output_chinese"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="중국어"
+                android:background="@android:color/white"/>
+
+            <Button
+                android:id="@+id/btn_output_english"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="영어"
+                android:background="@android:color/white"/>
+
+        </LinearLayout>
 
 
+        <View
+            android:id="@+id/bar_language"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_language"
+            android:background="#CFCFCF"/>
 
+        <ImageButton
+            android:id="@+id/btn_inputpronounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bar_language"
+            android:src="@drawable/ic_pronounce_black_24dp"
+            android:background="@null"
+            android:layout_margin="10dp"/>
+
+        <ImageButton
+            android:id="@+id/input_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btn_inputpronounce"
+            app:layout_constraintBottom_toBottomOf="@id/btn_inputpronounce"
+            android:src="@drawable/ic_clear_black_24dp"
+            android:background="@null"
+            android:layout_margin="10dp"/>
+
+        <EditText
+            android:id="@+id/input_translate"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_inputpronounce"
+            android:gravity="top|left"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:singleLine="false"
+            android:background="@null"
+            android:hint="번역할 내용을 입력하세요"/>
+
+        <View
+            android:id="@+id/bar_translate"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_translate"
+            android:background="#EAEAEA"/>
+
+        <ImageButton
+            android:id="@+id/btn_outputpronounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bar_translate"
+            android:src="@drawable/ic_pronounce_black_24dp"
+            android:background="@null"
+            android:layout_margin="10dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_outputsave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btn_outputpronounce"
+            app:layout_constraintBottom_toBottomOf="@id/btn_outputpronounce"
+            android:src="@drawable/ic_star_border_black_24dp"
+            android:background="@null"
+            android:layout_margin="10dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/output_translate"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_outputpronounce"
+            android:lines="10"
+            android:minLines="5"
+            android:gravity="top|left"
+            android:maxLines="10"
+            android:scrollbars="vertical"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
