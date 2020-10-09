@@ -73,17 +73,14 @@ public class PicActivity extends AppCompatActivity {
                 cameraView.start();
                 cameraView.captureImage();
                 graphicOverlay.clear();
-
-                btn_Capture.setVisibility(View.GONE);
-                btn_ReCapture.setVisibility(View.VISIBLE);
             }
         });
 
         btn_ReCapture.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
+                graphicOverlay.clear();
                 cameraView.start();
                 cameraView.captureImage();
-                graphicOverlay.clear();
 
                 btn_Capture.setVisibility(View.VISIBLE);
                 btn_ReCapture.setVisibility(View.GONE);
@@ -104,6 +101,8 @@ public class PicActivity extends AppCompatActivity {
             @Override
             public void onImage(CameraKitImage cameraKitImage) {
                 waitingDialog.show();
+                btn_Capture.setVisibility(View.GONE);
+                btn_ReCapture.setVisibility(View.VISIBLE);
 
                 Bitmap bitmap = cameraKitImage.getBitmap();
                 bitmap = Bitmap.createScaledBitmap(bitmap, cameraView.getWidth(), cameraView.getHeight(), false);
@@ -165,8 +164,10 @@ public class PicActivity extends AppCompatActivity {
             {
                 List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
 
+
                 for(int k = 0; k<elements.size(); k++)
                 {
+                    Log.d("번역", elements.get(k)+"");
                     TextGraphic textGraphic = new TextGraphic(graphicOverlay, elements.get(k));
                     graphicOverlay.add(textGraphic);
                     Log.d("textGraphic", textGraphic+"");

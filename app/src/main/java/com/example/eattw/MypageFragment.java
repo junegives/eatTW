@@ -38,6 +38,8 @@ public class MypageFragment  extends Fragment {
 
     private ImageButton btn_change_profile;
 
+    private Button btn_logout;
+
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
     AlertDialog waitingDialog;
@@ -68,6 +70,7 @@ public class MypageFragment  extends Fragment {
         layout_following = (LinearLayout)view.findViewById(R.id.layout_following);
         tv_follwing = (TextView)view.findViewById(R.id.tv_following);
         btn_change_profile = (ImageButton)view.findViewById(R.id.btn_change_profile);
+        btn_logout = (Button)view.findViewById(R.id.btn_logout);
 
         layout_follower.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -90,6 +93,16 @@ public class MypageFragment  extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ProfilemodifyActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        btn_logout.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+                //finish();
             }
         });
 

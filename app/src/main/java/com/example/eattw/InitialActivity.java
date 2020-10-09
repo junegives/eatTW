@@ -39,6 +39,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -59,8 +60,15 @@ public class InitialActivity extends AppCompatActivity {
     private EditText et_nick;
     private Button btn_nick_clear;
     private Button btn_profile;
+
+    private BottomSheetDialog bottomSheetDialog;
+    private Button btn_camera_go;
+    private Button btn_gallery_go;
+    private Button btn_img_delete;
+
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
+    FirebaseFirestore db;
     AlertDialog waitingDialog;
 
     //권한 요청을 할 때 발생하는 창에 대한 결과값을 받기 위해 지정해주는 정수
@@ -91,65 +99,117 @@ public class InitialActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
-        image_profile = (CircleImageView)findViewById(R.id.image_profile);
+        //사용자가 사용하고 싶은 닉네임을 입력하는 EditText
         et_nick = (EditText)findViewById(R.id.et_nick);
-        btn_nick_clear = (Button)findViewById(R.id.btn_nick_clear);
-        btn_profile = (Button)findViewById(R.id.btn_profile);
 
+        //사용자의 프로필 이미지가 나타나는 부분
+        image_profile = (CircleImageView)findViewById(R.id.image_profile);
+        image_profile.setOnClickListener(onClickListener);
+
+        //입력했던 닉네임을 한번에 지울 수 있는 버튼
+        btn_nick_clear = (Button)findViewById(R.id.btn_nick_clear);
+        btn_nick_clear.setOnClickListener(onClickListener);
+
+        //입력한 정보를 토대로 프로필을 업데이트 할 수 있는 버튼
+        btn_profile = (Button)findViewById(R.id.btn_profile);
+        btn_profile.setOnClickListener(onClickListener);
+
+        //프로필 이미지를 변경하기 위하여 image_profile을 클릭하였을 때, 하단에 어떠한 방법으로 이미지를 변경할 것인지 선택지가 있는 다이얼로그
+        bottomSheetDialog = new BottomSheetDialog(InitialActivity.this);
+
+        //프로필 이미지 변경을 위해 직접 사진을 찍으러 가기 위한 버튼
+        btn_camera_go = (Button)bottomSheetDialog.findViewById(R.id.btn_camera_go);
+        btn_camera_go.setOnClickListener(onClickListener);
+
+        //프로필 이미지 변경을 위해 갤러리를 들어 가기 위한 버튼
+        btn_gallery_go = (Button)bottomSheetDialog.findViewById(R.id.btn_gallery_go);
+        btn_gallery_go.setOnClickListener(onClickListener);
+
+        //현재 있던 프로필 이미지를 삭제할 수 있는 버튼
+        btn_img_delete = (Button)bottomSheetDialog.findViewById(R.id.btn_img_delete);
+        btn_gallery_go.setOnClickListener(onClickListener);
+
+        //사용자에게 휴대폰이 작업중인 것을 알려주도록 하기 위한 다이얼로그
         waitingDialog = new SpotsDialog.Builder()
                 .setCancelable(false)
                 .setMessage("잠시만 기다려주세요")
                 .setContext(this)
                 .build();
-
-        if(user.getPhotoUrl() != null){
-            Glide.with(InitialActivity.this)
-                .load(user.getPhotoUrl())
-                .into(image_profile);
-            //image_profile.setImageURI(user.getPhotoUrl());
-            photoUri = user.getPhotoUrl();
-        }
-        image_profile.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-
-                //카메라, 갤러리, 프로필 삭제를 선택할 수 있는 다이얼로그 띄움
-                showDialog();
-            }
-        });
-
-        if(user.getDisplayName() != null){
-            et_nick.setText(user.getDisplayName());
-        }
-        btn_nick_clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                et_nick.setText("");
-                et_nick.requestFocus();
-            }
-        });
-
-        btn_profile.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-
-                if(et_nick.getText().toString().length() == 0){
-                    Log.d("profile", "닉네임 공백");
-                    Toast.makeText(InitialActivity.this, "사용할 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
-                    et_nick.requestFocus();
-                }
-                else {
-
-                    waitingDialog.show();
-                    uploadFirebase();
-
-                }
-            }
-        });
-
     }
 
+    //클릭 이벤트
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+
+                //이미지 프로필을 변경하거나 삭제할 수 있는 버튼
+                case R.id.image_profile:
+                    //카메라, 갤러리, 프로필 삭제를 선택할 수 있는 다이얼로그 띄움
+                    showDialog();
+                    break;
+
+                //입력했던 닉네임을 한번에 지울 수 있는 버튼
+                case R.id.btn_nick_clear:
+                    et_nick.setText("");
+                    et_nick.requestFocus();
+                    break;
+
+                //입력한 정보를 토대로 프로필을 업데이트 할 수 있는 버튼
+                case R.id.btn_profile:
+                    if(et_nick.getText().toString().length() == 0){
+                        Log.d("profile", "닉네임 공백");
+                        Toast.makeText(InitialActivity.this, "사용할 닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+                        et_nick.requestFocus();
+                    } else {
+                        waitingDialog.show();
+                        uploadFirebase();
+                    }
+                    break;
+
+                //프로필 이미지를 변경하기 위하여 카메라로 들어갈 수 있는 버튼
+                case R.id.btn_camera_go:
+                    //권한 설정되어 있는지 먼저 확인
+                    //권한이 허용되어있지 않다면 권한요청
+                    if(!hasPermissions(InitialActivity.this, PERMISSIONS_CAMERA)){
+                        ActivityCompat.requestPermissions(InitialActivity.this, PERMISSIONS_CAMERA, MULTIPLE_PERMISSIONS);
+                    }
+
+                    //권한이 허용되어 있다면 다음 화면 진행
+                    else{
+                        bottomSheetDialog.dismiss();
+                        takePhoto();
+                    }
+                    break;
+
+                //프로필 이미지를 변경하기 위하여 갤러리로 들어갈 수 있는 버튼
+                case R.id.btn_gallery_go:
+                    //권한 설정되어 있는지 먼저 확인
+                    //권한이 허용되어있지 않다면 권한요청
+                    if(!hasPermissions(InitialActivity.this, PERMISSIONS_GALLERY)){
+                        ActivityCompat.requestPermissions(InitialActivity.this, PERMISSIONS_GALLERY, MULTIPLE_PERMISSIONS);
+                    }
+
+                    //권한이 허용되어 있다면 다음 화면 진행
+                    else{
+                        bottomSheetDialog.dismiss();
+                        gotoGallery();
+                    }
+                    break;
+
+                //프로필 이미지를 삭제할 수 있는 버튼
+                case R.id.btn_img_delete:
+                    image_profile.setImageResource(R.drawable.mandoo_profile);
+                    photoUri = null;
+                    bottomSheetDialog.dismiss();
+                    break;
+            }
+        }
+    };
+
+    //사용자가 권한을 허용하였는지 확인하기 위한 메소드
     public boolean hasPermissions(Context context, String... permissions){
         if(context != null && permissions != null){
             for (String permission : permissions){
@@ -161,61 +221,10 @@ public class InitialActivity extends AppCompatActivity {
         return true;
     }
 
+    //프로필 이미지를 수정할 때 선택지를 띄워주는 다이얼로그를 실행
     private void showDialog(){
-
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(InitialActivity.this);
-
         bottomSheetDialog.setContentView(R.layout.camera_gallery_dialog);
         bottomSheetDialog.show();
-
-        final Button btn_camera_go = (Button)bottomSheetDialog.findViewById(R.id.btn_camera_go);
-        final Button btn_gallery_go = (Button)bottomSheetDialog.findViewById(R.id.btn_gallery_go);
-        final Button btn_img_delete = (Button)bottomSheetDialog.findViewById(R.id.btn_img_delete);
-
-        btn_camera_go.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-
-                //권한 설정되어 있는지 먼저 확인
-                //권한이 허용되어있지 않다면 권한요청
-                if(!hasPermissions(InitialActivity.this, PERMISSIONS_CAMERA)){
-                    ActivityCompat.requestPermissions(InitialActivity.this, PERMISSIONS_CAMERA, MULTIPLE_PERMISSIONS);
-                }
-
-                //권한이 허용되어 있다면 다음 화면 진행
-                else{
-                    bottomSheetDialog.dismiss();
-                    takePhoto();
-                }
-            }
-        });
-
-        btn_gallery_go.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-
-                //권한 설정되어 있는지 먼저 확인
-                //권한이 허용되어있지 않다면 권한요청
-                if(!hasPermissions(InitialActivity.this, PERMISSIONS_GALLERY)){
-                    ActivityCompat.requestPermissions(InitialActivity.this, PERMISSIONS_GALLERY, MULTIPLE_PERMISSIONS);
-                }
-
-                //권한이 허용되어 있다면 다음 화면 진행
-                else{
-                    bottomSheetDialog.dismiss();
-                    gotoGallery();
-                }
-            }
-        });
-
-        btn_img_delete.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                image_profile.setImageResource(R.drawable.mandoo_profile);
-                photoUri = null;
-                bottomSheetDialog.dismiss();
-            }
-        });
     }
 
     private void takePhoto(){
@@ -442,7 +451,7 @@ public class InitialActivity extends AppCompatActivity {
                         // Handle failures
                         // ...
                         waitingDialog.dismiss();
-                        Toast.makeText(InitialActivity.this, "프로필 설정에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InitialActivity.this, "프로필 등록에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                         Log.d("TestImageDownload", "실패");
                     }
                 }

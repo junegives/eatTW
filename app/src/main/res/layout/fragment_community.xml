@@ -4,14 +4,159 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/community_top"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="community fragment"
-        android:textSize="40sp"/>
+        android:background="@android:color/white"
+        android:padding="10dp"
+        android:elevation="10dp">
+
+        <TextView
+            android:id="@+id/tv_community_title"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="커뮤니티 게시판"
+            android:textColor="@android:color/black"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="3dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_community_search"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="@id/tv_community_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_community_title"
+            app:layout_constraintEnd_toStartOf="@id/btn_community_write"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_search_black_24dp"
+            android:tint="@android:color/tab_indicator_text"
+            android:background="@null"/>
+
+        <ImageButton
+            android:id="@+id/btn_community_write"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="@id/tv_community_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_community_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_create_ff6837_24dp"
+            android:background="@null"/>
+
+        <RadioGroup
+            android:id="@+id/community_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/btnRadio_board"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/tv_community_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="20dp">
+
+            <RadioButton
+                android:id="@+id/btnRadio_board"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp"
+                android:drawableLeft="@drawable/board_icon"
+                android:drawableTint="@drawable/radiobutton_community"
+                android:drawablePadding="5dp"
+                android:text="잡담"
+                android:textColor="@drawable/radiobutton_community"
+                android:textSize="15dp"
+                />
+
+            <RadioButton
+                android:id="@+id/btnRadio_information"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp"
+                android:drawableLeft="@drawable/information_icon"
+                android:drawableTint="@drawable/radiobutton_community"
+                android:drawablePadding="5dp"
+                android:text="정보"
+                android:textColor="@drawable/radiobutton_community"
+                android:textSize="15dp" />
+
+            <RadioButton
+                android:id="@+id/btnRadio_review"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp"
+                android:drawableLeft="@drawable/review_icon"
+                android:drawableTint="@drawable/radiobutton_community"
+                android:drawablePadding="5dp"
+                android:text="리뷰"
+                android:textColor="@drawable/radiobutton_community"
+                android:textSize="15dp" />
+
+            <RadioButton
+                android:id="@+id/btnRadio_qna"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp"
+                android:drawableLeft="@drawable/qna_icon"
+                android:drawableTint="@drawable/radiobutton_community"
+                android:drawablePadding="5dp"
+                android:text="Q&amp;A"
+                android:textColor="@drawable/radiobutton_community"
+                android:textSize="15dp" />
+
+            <RadioButton
+                android:id="@+id/btnRadio_promotion"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:button="@null"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp"
+                android:drawableLeft="@drawable/promotion_icon"
+                android:drawableTint="@drawable/radiobutton_community"
+                android:drawablePadding="5dp"
+                android:text="모임"
+                android:textColor="@drawable/radiobutton_community"
+                android:textSize="15dp" />
+
+        </RadioGroup>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_community"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/community_top"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/white"/>
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

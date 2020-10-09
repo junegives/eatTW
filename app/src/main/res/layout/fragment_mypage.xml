@@ -113,4 +113,21 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+<!--    <Button-->
+<!--        android:id="@+id/btn_rules"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/btn_logout"-->
+<!--        android:background="@android:color/white"-->
+<!--        android:text="이용 약관 및 개인정보 처리방침"/>-->
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@android:color/white"
+        android:text="로그아웃"
+        android:textColor="@android:color/holo_red_dark"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

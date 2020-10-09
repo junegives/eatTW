@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -49,7 +50,7 @@ public class ImgTranslateActivity extends AppCompatActivity {
     private ImageView imageView;
     private AlertDialog waitingDialog;
     private GraphicOverlay graphicOverlay;
-    private Button btn_ReCapture;
+    private ImageButton btn_ReCapture;
 
     //권한 요청을 할 때 발생하는 창에 대한 결과값을 받기 위해 지정해주는 정수
     private final int PERMISSION_CODE = 12;
@@ -96,12 +97,12 @@ public class ImgTranslateActivity extends AppCompatActivity {
 
         imageView = (ImageView)findViewById(R.id.Image_view);
         graphicOverlay = (GraphicOverlay)findViewById(R.id.graphic_overlay);
-        btn_ReCapture = (Button)findViewById(R.id.btn_recapture);
+        btn_ReCapture = (ImageButton)findViewById(R.id.btn_recapture);
 
         btn_ReCapture.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                takePhoto();
                 graphicOverlay.clear();
+                takePhoto();
             }
         });
     }
@@ -174,7 +175,7 @@ public class ImgTranslateActivity extends AppCompatActivity {
             return;
         }
 
-        graphicOverlay.clear();
+        //graphicOverlay.clear();
 
         for(int i = 0; i < blocks.size(); i++)
         {
