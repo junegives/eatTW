@@ -1,18 +1,15 @@
 package com.example.eattw;
 
-import android.net.Uri;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PostInfo {
     private String category;
     private String title;
     private String content;
     private String publisher;
-    HashMap<String, String> img = new HashMap<String, String>();
+    ArrayList<ImgInfo> img = new ArrayList<ImgInfo>();
 
-    public PostInfo(String category, String title, String content, String publisher, HashMap<String, String> img){
+    public PostInfo(String category, String title, String content, String publisher,  ArrayList<ImgInfo> img){
         this.category = category;
         this.title = title;
         this.content = content;
@@ -52,11 +49,11 @@ public class PostInfo {
         this.publisher = publisher;
     }
 
-    public HashMap<String, String> getImg() {
+    public ArrayList<ImgInfo> getImg() {
         return img;
     }
 
-    public void setImg(HashMap<String, String> img) {
+    public void setImg( ArrayList<ImgInfo> img) {
         this.img = img;
     }
 }

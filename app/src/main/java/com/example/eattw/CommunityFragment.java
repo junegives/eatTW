@@ -3,6 +3,7 @@ package com.example.eattw;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,9 +15,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -25,13 +29,43 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.eattw.adapter.CommunityAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
 public class CommunityFragment  extends Fragment {
 
+    private static final String TAG = "CommunityFragment";
+
     private View view;
-    private Spinner spinnerCateogry;
+
+    private RadioGroup community_radio;
+
+    private RadioButton btnRadio_board;
+    private RadioButton btnRadio_information;
+    private RadioButton btnRadio_review;
+    private RadioButton btnRadio_qna;
+    private RadioButton btnRadio_promotion;
+
+    private String category = "잡담";
+
+    FirebaseFirestore db;
+
+    ArrayList<PostInfo> postList = new ArrayList<>();
+
+    private RecyclerView recyclerView;
+    RecyclerView.Adapter mAdapter;
+
+    ProgressDialog dialog;
 
     @Nullable
     @Override
@@ -40,8 +74,64 @@ public class CommunityFragment  extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_community, container, false);
 
+        //initRecycler();
+
         view.findViewById(R.id.btn_community_search).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_community_write).setOnClickListener(onClickListener);
+
+        db = FirebaseFirestore.getInstance();
+
+        community_radio = view.findViewById(R.id.community_radio);
+
+        btnRadio_board = view.findViewById(R.id.btnRadio_board);
+        btnRadio_information = view.findViewById(R.id.btnRadio_information);
+        btnRadio_review = view.findViewById(R.id.btnRadio_review);
+        btnRadio_qna = view.findViewById(R.id.btnRadio_qna);
+        btnRadio_promotion = view.findViewById(R.id.btnRadio_promotion);
+
+        dialog = new ProgressDialog(getContext());
+        dialog.setMessage("게시글 불러오는중...");
+        dialog.setCancelable(true);
+        dialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+
+        community_radio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                dialog.show();
+                if (checkedId == R.id.btnRadio_board) {
+                    category = "잡담";
+                    Log.d("alignTest", category + "");
+                    reload();
+                    //Adapter.notifyDataSetChanged();
+                } else if (checkedId == R.id.btnRadio_information) {
+                    category = "정보";
+                    Log.d("alignTest", category + "");
+                    reload();
+                    //Adapter.notifyDataSetChanged();
+
+                } else if (checkedId == R.id.btnRadio_review) {
+                    category = "리뷰";
+                    Log.d("alignTest", category + "");
+                    reload();
+                    //Adapter.notifyDataSetChanged();
+
+                } else if (checkedId == R.id.btnRadio_qna) {
+                    category = "Q&A";
+                    Log.d("alignTest", category + "");
+                    reload();
+                    //Adapter.notifyDataSetChanged();
+
+                } else if (checkedId == R.id.btnRadio_promotion) {
+                    category = "모임";
+                    Log.d("alignTest", category + "");
+                    reload();
+                    //Adapter.notifyDataSetChanged();
+
+                } else {
+                }
+            }
+        });
+
 
 
         return view;
@@ -66,4 +156,55 @@ public class CommunityFragment  extends Fragment {
             }
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        dialog.show();
+        reload();
+    }
+
+    public void initRecycler(){
+        recyclerView = view.findViewById(R.id.recycler_community);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mAdapter = new CommunityAdapter(postList);
+        recyclerView.setAdapter(mAdapter);
+    }
+
+    public void reload(){
+        Log.d(TAG, category + " => " + category);
+        postList.clear();
+        initRecycler();
+        db.collection(category).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            TextView no_post = view.findViewById(R.id.no_posts);
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                postList.add(new PostInfo(
+                                        document.getData().get("category").toString(),
+                                        document.getData().get("title").toString(),
+                                        document.getData().get("content").toString(),
+                                        document.getData().get("publisher").toString(),
+                                                (ArrayList<ImgInfo>) document.getData().get("img")));
+                            }
+                            if(postList.size() == 0){
+                                dialog.dismiss();
+                                no_post.setVisibility(View.VISIBLE);
+                            }
+                            else{
+                                no_post.setVisibility(View.GONE);
+                                mAdapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        } else {
+                            dialog.dismiss();
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
 }

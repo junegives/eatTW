@@ -115,12 +115,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:button="@null"
+                android:drawableLeft="@drawable/qna_icon"
+                android:drawablePadding="5dp"
+                android:drawableTint="@drawable/radiobutton_community"
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
                 android:paddingRight="10dp"
-                android:drawableLeft="@drawable/qna_icon"
-                android:drawableTint="@drawable/radiobutton_community"
-                android:drawablePadding="5dp"
                 android:text="Q&amp;A"
                 android:textColor="@drawable/radiobutton_community"
                 android:textSize="15dp" />
@@ -145,15 +145,30 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/no_posts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="게시글이 없습니다"
+        android:textSize="25sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_community"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/community_top"
         android:layout_marginTop="10dp"
-        android:background="@android:color/white"/>
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/community_top"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginBottom="65dp"/>
 
 
 

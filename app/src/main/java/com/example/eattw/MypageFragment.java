@@ -102,7 +102,7 @@ public class MypageFragment  extends Fragment {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
-                //finish();
+                getActivity().finish();
             }
         });
 

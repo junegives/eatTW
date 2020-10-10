@@ -21,15 +21,15 @@
         <activity android:name=".ProfilemodifyActivity" />
         <activity android:name=".PicActivity" />
         <activity android:name=".PicTransActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".InitialActivity" />
+        <activity android:name=".LoginActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter></activity>
-        <activity android:name=".InitialActivity" />
-        <activity android:name=".LoginActivity">
+            </intent-filter>
         </activity>
         <activity android:name=".SignupActivity" />
 

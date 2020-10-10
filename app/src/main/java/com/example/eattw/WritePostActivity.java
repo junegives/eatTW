@@ -40,7 +40,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import dmax.dialog.SpotsDialog;
 
@@ -97,7 +96,7 @@ public class WritePostActivity extends AppCompatActivity {
     ArrayList desList = new ArrayList<>();
 
     //사진 정보
-    HashMap<String, String> img = new HashMap<String, String>();
+    ArrayList<ImgInfo> img = new ArrayList<ImgInfo>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,11 +124,11 @@ public class WritePostActivity extends AppCompatActivity {
 
         scrollView = findViewById(R.id.scrollView);
 
-        image1 = (LinearLayout)findViewById(R.id.image1);
-        image2 = (LinearLayout)findViewById(R.id.image2);
-        image3 = (LinearLayout)findViewById(R.id.image3);
-        image4 = (LinearLayout)findViewById(R.id.image4);
-        image5 = (LinearLayout)findViewById(R.id.image5);
+        image1 = (LinearLayout) findViewById(R.id.image1);
+        image2 = (LinearLayout) findViewById(R.id.image2);
+        image3 = (LinearLayout) findViewById(R.id.image3);
+        image4 = (LinearLayout) findViewById(R.id.image4);
+        image5 = (LinearLayout) findViewById(R.id.image5);
 
         iv_image1 = (ImageView) findViewById(R.id.iv_image1);
         iv_image2 = (ImageView) findViewById(R.id.iv_image2);
@@ -154,7 +153,7 @@ public class WritePostActivity extends AppCompatActivity {
 
         waitingDialog = new SpotsDialog.Builder()
                 .setCancelable(false)
-                .setMessage("잠시만 기다려주세요")
+                .setMessage("글 업로드 중")
                 .setContext(this)
                 .build();
     }
@@ -182,9 +181,7 @@ public class WritePostActivity extends AppCompatActivity {
                     else if (imageList.size() >= 5) {
                         Toast.makeText(WritePostActivity.this, "사진은 5개까지 업로드 가능 합니다.", Toast.LENGTH_SHORT).show();
                         return;
-                    }
-
-                    else {
+                    } else {
                         gotoGallery();
                     }
                     break;
@@ -250,7 +247,7 @@ public class WritePostActivity extends AppCompatActivity {
                 ClipData clipData = data.getClipData();
                 Log.i("clipdata", String.valueOf(clipData.getItemCount()));
                 if (clipData.getItemCount() > 5 || clipData.getItemCount() + imageList.size() > 5) {
-                    Toast.makeText(WritePostActivity.this, "사진은 5개까지 업로드 가능 합니다.\n현재 총 "+imageList.size()+"장", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WritePostActivity.this, "사진은 5개까지 업로드 가능 합니다.\n현재 총 " + imageList.size() + "장", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 // 멀티 선택에서 하나만 선택했을 경우
@@ -268,9 +265,9 @@ public class WritePostActivity extends AppCompatActivity {
         }
     }
 
-    private void addImage(Uri imageURI){
+    private void addImage(Uri imageURI) {
         imageList.add(imageURI);
-        if(imageList.size() == 1){
+        if (imageList.size() == 1) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.GONE);
             image3.setVisibility(View.GONE);
@@ -279,8 +276,7 @@ public class WritePostActivity extends AppCompatActivity {
 
             iv_image1.setImageURI(imageURI);
 
-        }
-        else if(imageList.size() == 2){
+        } else if (imageList.size() == 2) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
             image3.setVisibility(View.GONE);
@@ -288,8 +284,7 @@ public class WritePostActivity extends AppCompatActivity {
             image5.setVisibility(View.GONE);
 
             iv_image2.setImageURI(imageURI);
-        }
-        else if(imageList.size() == 3){
+        } else if (imageList.size() == 3) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
             image3.setVisibility(View.VISIBLE);
@@ -297,8 +292,7 @@ public class WritePostActivity extends AppCompatActivity {
             image5.setVisibility(View.GONE);
 
             iv_image3.setImageURI(imageURI);
-        }
-        else if(imageList.size() == 4){
+        } else if (imageList.size() == 4) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
             image3.setVisibility(View.VISIBLE);
@@ -306,8 +300,7 @@ public class WritePostActivity extends AppCompatActivity {
             image5.setVisibility(View.GONE);
 
             iv_image4.setImageURI(imageURI);
-        }
-        else if(imageList.size() == 5){
+        } else if (imageList.size() == 5) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
             image3.setVisibility(View.VISIBLE);
@@ -326,11 +319,11 @@ public class WritePostActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteImg(int id){
-        imageList.remove(id-1);
+    private void deleteImg(int id) {
+        imageList.remove(id - 1);
         //Toast.makeText(this, ""+imageList.size(), Toast.LENGTH_SHORT).show();
 
-        if(imageList.size() == 0){
+        if (imageList.size() == 0) {
             image1.setVisibility(View.GONE);
             image2.setVisibility(View.GONE);
             image3.setVisibility(View.GONE);
@@ -340,7 +333,7 @@ public class WritePostActivity extends AppCompatActivity {
             iv_image1.setImageResource(0);
         }
 
-        if(imageList.size() == 1){
+        if (imageList.size() == 1) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.GONE);
             image3.setVisibility(View.GONE);
@@ -349,9 +342,8 @@ public class WritePostActivity extends AppCompatActivity {
 
             iv_image2.setImageResource(0);
 
-            iv_image1.setImageURI((Uri)imageList.get(0));
-        }
-        else if(imageList.size() == 2){
+            iv_image1.setImageURI((Uri) imageList.get(0));
+        } else if (imageList.size() == 2) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
             image3.setVisibility(View.GONE);
@@ -360,10 +352,9 @@ public class WritePostActivity extends AppCompatActivity {
 
             iv_image3.setImageResource(0);
 
-            iv_image1.setImageURI((Uri)imageList.get(0));
-            iv_image2.setImageURI((Uri)imageList.get(1));
-        }
-        else if(imageList.size() == 3){
+            iv_image1.setImageURI((Uri) imageList.get(0));
+            iv_image2.setImageURI((Uri) imageList.get(1));
+        } else if (imageList.size() == 3) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
             image3.setVisibility(View.VISIBLE);
@@ -372,11 +363,10 @@ public class WritePostActivity extends AppCompatActivity {
 
             iv_image4.setImageResource(0);
 
-            iv_image1.setImageURI((Uri)imageList.get(0));
-            iv_image2.setImageURI((Uri)imageList.get(1));
-            iv_image3.setImageURI((Uri)imageList.get(2));
-        }
-        else if(imageList.size() == 4){
+            iv_image1.setImageURI((Uri) imageList.get(0));
+            iv_image2.setImageURI((Uri) imageList.get(1));
+            iv_image3.setImageURI((Uri) imageList.get(2));
+        } else if (imageList.size() == 4) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
             image3.setVisibility(View.VISIBLE);
@@ -385,10 +375,10 @@ public class WritePostActivity extends AppCompatActivity {
 
             iv_image5.setImageResource(0);
 
-            iv_image1.setImageURI((Uri)imageList.get(0));
-            iv_image2.setImageURI((Uri)imageList.get(1));
-            iv_image3.setImageURI((Uri)imageList.get(2));
-            iv_image4.setImageURI((Uri)imageList.get(3));
+            iv_image1.setImageURI((Uri) imageList.get(0));
+            iv_image2.setImageURI((Uri) imageList.get(1));
+            iv_image3.setImageURI((Uri) imageList.get(2));
+            iv_image4.setImageURI((Uri) imageList.get(3));
         }
     }
 
@@ -402,71 +392,80 @@ public class WritePostActivity extends AppCompatActivity {
         if (title.length() > 0 && content.length() > 0) {
             user = firebaseAuth.getCurrentUser();
 
-            int i = 0;
-            for(i = 0; i < imageList.size(); i++){
-                Uri file = (Uri)imageList.get(i);
+            if (imageList.size() == 0) {
+                Log.d("사진 없다", img.size() + "\n사진 : " + img.toString());
+                PostInfo postInfo = new PostInfo(category, title, content, user.getUid(), img);
+                uploader(postInfo);
+            } else {
+                int i = 0;
+                for (i = 0; i < imageList.size(); i++) {
+                    Uri file = (Uri) imageList.get(i);
 
-                final StorageReference riversRef = storageRef.child("images/" + user.getUid() + "/" + file.getLastPathSegment());
-                UploadTask uploadTask = riversRef.putFile(file);
+                    final StorageReference riversRef = storageRef.child("images/" + user.getUid() + "/" + file.getLastPathSegment());
+                    UploadTask uploadTask = riversRef.putFile(file);
 
-                final int finalI = i;
-                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            Log.d("이미지 업로드", "실패");
-                            throw task.getException();
+                    final int finalI = i;
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                Log.d("이미지 업로드", "실패");
+                                throw task.getException();
+                            }
+
+                            // Continue with the task to get the download URL
+                            return riversRef.getDownloadUrl();
                         }
-
-                        // Continue with the task to get the download URL
-                        return riversRef.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri downloadUri = task.getResult();
-                            Log.d("TestImageDownload", "성공: " + downloadUri);
-                            if(finalI == 0){
-                                img.put(downloadUri.toString(), et_image1.getText().toString());
-                                Log.d("사진 다넣었다", img.size()+"\n사진 : "+img.toString());
-                                Log.d("사진 넣는중!!", "하나");
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri downloadUri = task.getResult();
+                                Log.d("TestImageDownload", "성공: " + downloadUri);
+                                if (finalI == 0) {
+                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image1.getText().toString());
+                                    img.add(imgInfo);
+                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    Log.d("사진 넣는중!!", "하나");
+                                } else if (finalI == 1) {
+                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image2.getText().toString());
+                                    img.add(imgInfo);
+                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    Log.d("사진 넣는중!!", "둘");
+                                } else if (finalI == 2) {
+                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image3.getText().toString());
+                                    img.add(imgInfo);
+                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    Log.d("사진 넣는중!!", "셋");
+                                } else if (finalI == 3) {
+                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image4.getText().toString());
+                                    img.add(imgInfo);
+                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    Log.d("사진 넣는중!!", "넷");
+                                } else if (finalI == 4) {
+                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image5.getText().toString());
+                                    img.add(imgInfo);
+                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    Log.d("사진 넣는중!!", "다섯");
+                                }
+                                if (finalI == imageList.size() - 1) {
+                                    Log.d("사진 다넣었다진짜로", img.size() + "\n사진 : " + img.toString());
+                                    PostInfo postInfo = new PostInfo(category, title, content, user.getUid(), img);
+                                    uploader(postInfo);
+                                }
+                            } else {
+                                Log.d("TestImageDownload", "실패");
                             }
-                            else if(finalI == 1){
-                                img.put(downloadUri.toString(), et_image2.getText().toString());
-                                Log.d("사진 다넣었다", img.size()+"\n사진 : "+img.toString());
-                                Log.d("사진 넣는중!!", "둘");
-                            }
-                            else if(finalI == 2){
-                                img.put(downloadUri.toString(), et_image3.getText().toString());
-                                Log.d("사진 다넣었다", img.size()+"\n사진 : "+img.toString());
-                                Log.d("사진 넣는중!!", "셋");
-                            }
-                            else if(finalI == 3){
-                                img.put(downloadUri.toString(), et_image4.getText().toString());
-                                Log.d("사진 다넣었다", img.size()+"\n사진 : "+img.toString());
-                                Log.d("사진 넣는중!!", "넷");
-                            }
-                            else if(finalI == 4){
-                                img.put(downloadUri.toString(), et_image5.getText().toString());
-                                Log.d("사진 다넣었다", img.size()+"\n사진 : "+img.toString());
-                                Log.d("사진 넣는중!!", "다섯");
-                            }
-                            if(finalI == imageList.size() - 1){
-                                Log.d("사진 다넣었다진짜로", img.size()+"\n사진 : "+img.toString());
-                                PostInfo postInfo = new PostInfo(category, title, content, user.getUid(), img);
-                                uploader(postInfo);
-                            }
-                        } else {
-                            Log.d("TestImageDownload", "실패");
                         }
-                    }
-                });
+                    });
+                }
             }
         } else if (title.length() <= 0) {
+            waitingDialog.dismiss();
             et_title.setError("제목을 입력하세요");
             et_title.requestFocus();
         } else {
+            waitingDialog.dismiss();
             et_content.setError("내용을 입력하세요");
             et_content.requestFocus();
         }
@@ -474,7 +473,7 @@ public class WritePostActivity extends AppCompatActivity {
 
     private void uploader(PostInfo postInfo) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("posts").document(category).collection(user.getUid()).add(postInfo)
+        db.collection(category).add(postInfo)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
@@ -491,7 +490,7 @@ public class WritePostActivity extends AppCompatActivity {
         finish();
     }
 
-    private void showAlert(final int id){
+    private void showAlert(final int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(WritePostActivity.this);
         builder.setTitle("삭제하시겠습니까?");
         builder.setPositiveButton("확인",
