@@ -1,20 +1,33 @@
 package com.example.eattw;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PostInfo {
     private String category;
     private String title;
     private String content;
     private String publisher;
-    ArrayList<ImgInfo> img = new ArrayList<ImgInfo>();
+    private ArrayList<String> imageList = new ArrayList<String>();
+    private ArrayList<String> desList = new ArrayList<String>();
+    //날짜
+    private Date createdAt;
+    //좋아요
+    private int like;
+    //스크랩
+    private int scrap;
+    //댓글
+    private int comments;
 
-    public PostInfo(String category, String title, String content, String publisher,  ArrayList<ImgInfo> img){
+    public PostInfo(String category, String title, String content, String publisher, ArrayList<String> imageList, ArrayList<String> desList, Date createdAt){
         this.category = category;
         this.title = title;
         this.content = content;
         this.publisher = publisher;
-        this.img = img;
+        this.imageList = imageList;
+        this.desList = desList;
+        this.createdAt = createdAt;
+//        this.img = img;
     }
 
     public String getCategory() {
@@ -49,11 +62,27 @@ public class PostInfo {
         this.publisher = publisher;
     }
 
-    public ArrayList<ImgInfo> getImg() {
-        return img;
+    public ArrayList<String> getImageList() {
+        return imageList;
     }
 
-    public void setImg( ArrayList<ImgInfo> img) {
-        this.img = img;
+    public void setImageList(ArrayList<String> imageList) {
+        this.imageList = imageList;
+    }
+
+    public ArrayList<String> getDesList() {
+        return desList;
+    }
+
+    public void setDesList(ArrayList<String> desList) {
+        this.desList = desList;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

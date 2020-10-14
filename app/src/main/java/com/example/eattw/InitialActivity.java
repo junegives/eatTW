@@ -118,6 +118,7 @@ public class InitialActivity extends AppCompatActivity {
 
         //프로필 이미지를 변경하기 위하여 image_profile을 클릭하였을 때, 하단에 어떠한 방법으로 이미지를 변경할 것인지 선택지가 있는 다이얼로그
         bottomSheetDialog = new BottomSheetDialog(InitialActivity.this);
+        bottomSheetDialog.setContentView(R.layout.camera_gallery_dialog);
 
         //프로필 이미지 변경을 위해 직접 사진을 찍으러 가기 위한 버튼
         btn_camera_go = (Button)bottomSheetDialog.findViewById(R.id.btn_camera_go);
@@ -129,7 +130,7 @@ public class InitialActivity extends AppCompatActivity {
 
         //현재 있던 프로필 이미지를 삭제할 수 있는 버튼
         btn_img_delete = (Button)bottomSheetDialog.findViewById(R.id.btn_img_delete);
-        btn_gallery_go.setOnClickListener(onClickListener);
+        btn_img_delete.setOnClickListener(onClickListener);
 
         //사용자에게 휴대폰이 작업중인 것을 알려주도록 하기 위한 다이얼로그
         waitingDialog = new SpotsDialog.Builder()
@@ -223,7 +224,6 @@ public class InitialActivity extends AppCompatActivity {
 
     //프로필 이미지를 수정할 때 선택지를 띄워주는 다이얼로그를 실행
     private void showDialog(){
-        bottomSheetDialog.setContentView(R.layout.camera_gallery_dialog);
         bottomSheetDialog.show();
     }
 

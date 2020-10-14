@@ -40,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import dmax.dialog.SpotsDialog;
 
@@ -90,13 +91,11 @@ public class WritePostActivity extends AppCompatActivity {
     private static final int PICK_FROM_GALLERY = 2;
 
     //사진 경로
-    ArrayList imageList = new ArrayList<>();
-
+    ArrayList<String> imageList = new ArrayList<>();
     //사진에 대한 설명
-    ArrayList desList = new ArrayList<>();
+    ArrayList<String> desList = new ArrayList<>();
 
-    //사진 정보
-    ArrayList<ImgInfo> img = new ArrayList<ImgInfo>();
+    private PostInfo postInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +155,10 @@ public class WritePostActivity extends AppCompatActivity {
                 .setMessage("글 업로드 중")
                 .setContext(this)
                 .build();
+
+        //수정
+        postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
+        //postInit();
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -167,6 +170,7 @@ public class WritePostActivity extends AppCompatActivity {
                     break;
                 case R.id.btn_write_done:
                     //Toast.makeText(WritePostActivity.this, "글 제목 : " + et_title.getText() + "\n글 내용 : " + et_content.getText(), Toast.LENGTH_SHORT).show();
+                    desList = new ArrayList<>();
                     waitingDialog.show();
                     storageUpload();
                     break;
@@ -266,7 +270,7 @@ public class WritePostActivity extends AppCompatActivity {
     }
 
     private void addImage(Uri imageURI) {
-        imageList.add(imageURI);
+        imageList.add(imageURI.toString());
         if (imageList.size() == 1) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.GONE);
@@ -342,7 +346,7 @@ public class WritePostActivity extends AppCompatActivity {
 
             iv_image2.setImageResource(0);
 
-            iv_image1.setImageURI((Uri) imageList.get(0));
+            iv_image1.setImageURI(Uri.parse(imageList.get(0)));
         } else if (imageList.size() == 2) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
@@ -352,8 +356,8 @@ public class WritePostActivity extends AppCompatActivity {
 
             iv_image3.setImageResource(0);
 
-            iv_image1.setImageURI((Uri) imageList.get(0));
-            iv_image2.setImageURI((Uri) imageList.get(1));
+            iv_image1.setImageURI(Uri.parse(imageList.get(0)));
+            iv_image2.setImageURI(Uri.parse(imageList.get(1)));
         } else if (imageList.size() == 3) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
@@ -363,9 +367,9 @@ public class WritePostActivity extends AppCompatActivity {
 
             iv_image4.setImageResource(0);
 
-            iv_image1.setImageURI((Uri) imageList.get(0));
-            iv_image2.setImageURI((Uri) imageList.get(1));
-            iv_image3.setImageURI((Uri) imageList.get(2));
+            iv_image1.setImageURI(Uri.parse(imageList.get(0)));
+            iv_image2.setImageURI(Uri.parse(imageList.get(1)));
+            iv_image3.setImageURI(Uri.parse(imageList.get(2)));
         } else if (imageList.size() == 4) {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
@@ -375,10 +379,10 @@ public class WritePostActivity extends AppCompatActivity {
 
             iv_image5.setImageResource(0);
 
-            iv_image1.setImageURI((Uri) imageList.get(0));
-            iv_image2.setImageURI((Uri) imageList.get(1));
-            iv_image3.setImageURI((Uri) imageList.get(2));
-            iv_image4.setImageURI((Uri) imageList.get(3));
+            iv_image1.setImageURI(Uri.parse(imageList.get(0)));
+            iv_image2.setImageURI(Uri.parse(imageList.get(1)));
+            iv_image3.setImageURI(Uri.parse(imageList.get(2)));
+            iv_image4.setImageURI(Uri.parse(imageList.get(3)));
         }
     }
 
@@ -389,17 +393,19 @@ public class WritePostActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference storageRef = storage.getReference();
 
+        //final Date date = postInfo == null ? new Date() : postInfo.getCreatedAt();
+
         if (title.length() > 0 && content.length() > 0) {
             user = firebaseAuth.getCurrentUser();
 
             if (imageList.size() == 0) {
-                Log.d("사진 없다", img.size() + "\n사진 : " + img.toString());
-                PostInfo postInfo = new PostInfo(category, title, content, user.getUid(), img);
+//                Log.d("사진 없다", img.size() + "\n사진 : " + img.toString());
+                PostInfo postInfo = new PostInfo(category, title, content, user.getUid(), imageList, desList, new Date());
                 uploader(postInfo);
             } else {
                 int i = 0;
                 for (i = 0; i < imageList.size(); i++) {
-                    Uri file = (Uri) imageList.get(i);
+                    Uri file = Uri.parse(imageList.get(i));
 
                     final StorageReference riversRef = storageRef.child("images/" + user.getUid() + "/" + file.getLastPathSegment());
                     UploadTask uploadTask = riversRef.putFile(file);
@@ -423,34 +429,45 @@ public class WritePostActivity extends AppCompatActivity {
                                 Uri downloadUri = task.getResult();
                                 Log.d("TestImageDownload", "성공: " + downloadUri);
                                 if (finalI == 0) {
-                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image1.getText().toString());
-                                    img.add(imgInfo);
-                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    imageList.set(0, downloadUri.toString());
+                                    desList.add(et_image1.getText().toString());
+//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image1.getText().toString());
+//                                    img.add(imgInfo);
+//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
                                     Log.d("사진 넣는중!!", "하나");
                                 } else if (finalI == 1) {
-                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image2.getText().toString());
-                                    img.add(imgInfo);
-                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    imageList.set(1, downloadUri.toString());
+                                    desList.add(et_image2.getText().toString());
+//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image2.getText().toString());
+//                                    img.add(imgInfo);
+//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
                                     Log.d("사진 넣는중!!", "둘");
                                 } else if (finalI == 2) {
-                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image3.getText().toString());
-                                    img.add(imgInfo);
-                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    imageList.set(2, downloadUri.toString());
+                                    desList.add(et_image3.getText().toString());
+//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image3.getText().toString());
+//                                    img.add(imgInfo);
+//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
                                     Log.d("사진 넣는중!!", "셋");
                                 } else if (finalI == 3) {
-                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image4.getText().toString());
-                                    img.add(imgInfo);
-                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    imageList.set(3, downloadUri.toString());
+                                    desList.add(et_image4.getText().toString());
+//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image4.getText().toString());
+//                                    img.add(imgInfo);
+//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
                                     Log.d("사진 넣는중!!", "넷");
                                 } else if (finalI == 4) {
-                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image5.getText().toString());
-                                    img.add(imgInfo);
-                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
+                                    imageList.set(4, downloadUri.toString());
+                                    desList.add(et_image5.getText().toString());
+//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image5.getText().toString());
+//                                    img.add(imgInfo);
+//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
                                     Log.d("사진 넣는중!!", "다섯");
                                 }
+                                //마지막 사진까지 다 for문 돌렸을 때
                                 if (finalI == imageList.size() - 1) {
-                                    Log.d("사진 다넣었다진짜로", img.size() + "\n사진 : " + img.toString());
-                                    PostInfo postInfo = new PostInfo(category, title, content, user.getUid(), img);
+//                                    Log.d("사진 다넣었다진짜로", img.size() + "\n사진 : " + img.toString());
+                                    PostInfo postInfo = new PostInfo(category, title, content, user.getUid(), imageList, desList, new Date());
                                     uploader(postInfo);
                                 }
                             } else {

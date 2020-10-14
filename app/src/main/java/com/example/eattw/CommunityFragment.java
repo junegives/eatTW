@@ -23,6 +23,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,12 +36,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eattw.adapter.CommunityAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CommunityFragment  extends Fragment {
 
@@ -49,7 +55,6 @@ public class CommunityFragment  extends Fragment {
     private View view;
 
     private RadioGroup community_radio;
-
     private RadioButton btnRadio_board;
     private RadioButton btnRadio_information;
     private RadioButton btnRadio_review;
@@ -58,7 +63,9 @@ public class CommunityFragment  extends Fragment {
 
     private String category = "잡담";
 
-    FirebaseFirestore db;
+    private FirebaseFirestore db;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser user;
 
     ArrayList<PostInfo> postList = new ArrayList<>();
 
@@ -94,48 +101,52 @@ public class CommunityFragment  extends Fragment {
         dialog.setCancelable(true);
         dialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
 
-        community_radio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                dialog.show();
-                if (checkedId == R.id.btnRadio_board) {
-                    category = "잡담";
-                    Log.d("alignTest", category + "");
-                    reload();
-                    //Adapter.notifyDataSetChanged();
-                } else if (checkedId == R.id.btnRadio_information) {
-                    category = "정보";
-                    Log.d("alignTest", category + "");
-                    reload();
-                    //Adapter.notifyDataSetChanged();
+        community_radio.setOnCheckedChangeListener(onCheckedChangeListener);
 
-                } else if (checkedId == R.id.btnRadio_review) {
-                    category = "리뷰";
-                    Log.d("alignTest", category + "");
-                    reload();
-                    //Adapter.notifyDataSetChanged();
-
-                } else if (checkedId == R.id.btnRadio_qna) {
-                    category = "Q&A";
-                    Log.d("alignTest", category + "");
-                    reload();
-                    //Adapter.notifyDataSetChanged();
-
-                } else if (checkedId == R.id.btnRadio_promotion) {
-                    category = "모임";
-                    Log.d("alignTest", category + "");
-                    reload();
-                    //Adapter.notifyDataSetChanged();
-
-                } else {
-                }
-            }
-        });
-
-
+        firebaseAuth = firebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
 
         return view;
     }
+
+    RadioGroup.OnCheckedChangeListener onCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            dialog.show();
+            if (checkedId == R.id.btnRadio_board) {
+                category = "잡담";
+                Log.d("alignTest", category + "");
+                reload();
+                //Adapter.notifyDataSetChanged();
+            } else if (checkedId == R.id.btnRadio_information) {
+                category = "정보";
+                Log.d("alignTest", category + "");
+                reload();
+                //Adapter.notifyDataSetChanged();
+
+            } else if (checkedId == R.id.btnRadio_review) {
+                category = "리뷰";
+                Log.d("alignTest", category + "");
+                reload();
+                //Adapter.notifyDataSetChanged();
+
+            } else if (checkedId == R.id.btnRadio_qna) {
+                category = "Q&A";
+                Log.d("alignTest", category + "");
+                reload();
+                //Adapter.notifyDataSetChanged();
+
+            } else if (checkedId == R.id.btnRadio_promotion) {
+                category = "모임";
+                Log.d("alignTest", category + "");
+                reload();
+                //Adapter.notifyDataSetChanged();
+
+            } else {
+            }
+
+        }
+    };
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -168,7 +179,7 @@ public class CommunityFragment  extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_community);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mAdapter = new CommunityAdapter(postList);
+        mAdapter = new CommunityAdapter(postList, this);
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -189,13 +200,16 @@ public class CommunityFragment  extends Fragment {
                                         document.getData().get("title").toString(),
                                         document.getData().get("content").toString(),
                                         document.getData().get("publisher").toString(),
-                                                (ArrayList<ImgInfo>) document.getData().get("img")));
+                                        (ArrayList<String>) document.getData().get("imageList"),
+                                        (ArrayList<String>) document.getData().get("desList"),
+                                        new Date(document.getDate("createdAt").getTime())));
                             }
                             if(postList.size() == 0){
                                 dialog.dismiss();
                                 no_post.setVisibility(View.VISIBLE);
                             }
                             else{
+                                Log.d("hihi", postList.get(0).getCreatedAt().toString());
                                 no_post.setVisibility(View.GONE);
                                 mAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
@@ -207,4 +221,61 @@ public class CommunityFragment  extends Fragment {
                     }
                 });
     }
+
+    //글 쓰는건 D\android\android\clamp\NewPostActivity.java 참고
+
+    //이게 찐
+//    private void readPost() {
+//        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+//        firebaseFirestore.collection("Posts").document(postid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//            @Override
+//            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+//                blogPostList.clear();
+//                BlogPost blogPost = documentSnapshot.toObject(BlogPost.class);
+//                blogPostList.add(blogPost);
+//
+//                blogRecyclerAdapter.notifyDataSetChanged();
+//
+//            }
+//        });
+//    }
+
+//    private void readPostsFromDB()
+//    {
+//        // Read from the database
+//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    String id = snapshot.getKey();
+//                    final Post post = snapshot.getValue(Post.class);
+//                    post.setId(id);
+//                    DatabaseReference userRef = database.getReference("Users").child(post.getUserId());
+//                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            // cast datasnapshot to User
+//                            User user = dataSnapshot.getValue(User.class);
+//                            post.setUser(user);
+//
+//                            // apend post to list (posts)
+//                            posts.add(post);
+//                            postAdapter.notifyDataSetChanged();
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//                // Failed to read value
+//                Toast.makeText(getActivity(), " "+error.toException(), Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
 }
