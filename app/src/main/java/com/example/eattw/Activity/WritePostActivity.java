@@ -1,11 +1,10 @@
-package com.example.eattw;
+package com.example.eattw.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
@@ -25,6 +24,8 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.eattw.Item.PostInfo;
+import com.example.eattw.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,7 +33,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -393,14 +393,11 @@ public class WritePostActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference storageRef = storage.getReference();
 
-        //final Date date = postInfo == null ? new Date() : postInfo.getCreatedAt();
-
         if (title.length() > 0 && content.length() > 0) {
             user = firebaseAuth.getCurrentUser();
 
             if (imageList.size() == 0) {
-//                Log.d("사진 없다", img.size() + "\n사진 : " + img.toString());
-                PostInfo postInfo = new PostInfo(category, title, content, user.getUid(), imageList, desList, new Date());
+                PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, user.getDisplayName(), imageList, desList, new Date(), 0, 0, 0);
                 uploader(postInfo);
             } else {
                 int i = 0;
@@ -467,7 +464,7 @@ public class WritePostActivity extends AppCompatActivity {
                                 //마지막 사진까지 다 for문 돌렸을 때
                                 if (finalI == imageList.size() - 1) {
 //                                    Log.d("사진 다넣었다진짜로", img.size() + "\n사진 : " + img.toString());
-                                    PostInfo postInfo = new PostInfo(category, title, content, user.getUid(), imageList, desList, new Date());
+                                    PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, user.getDisplayName(), imageList, desList, new Date(), 0, 0, 0);
                                     uploader(postInfo);
                                 }
                             } else {
@@ -490,7 +487,7 @@ public class WritePostActivity extends AppCompatActivity {
 
     private void uploader(PostInfo postInfo) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(category).add(postInfo)
+        db.collection("Posts").add(postInfo)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {

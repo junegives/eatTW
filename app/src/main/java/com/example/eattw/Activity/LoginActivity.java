@@ -1,4 +1,4 @@
-package com.example.eattw;
+package com.example.eattw.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.eattw.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseNetworkException;
@@ -34,12 +34,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         firebaseAuth = firebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
 
-        if (firebaseAuth.getCurrentUser() != null) {
-            // User is signed in (getCurrentUser() will be null if not signed in)
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
+        if (firebaseAuth.getCurrentUser() != null && user.getDisplayName() != null){
+            updateUI();
         }
 
         et_email_login = findViewById(R.id.et_email_login);
@@ -84,20 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             //성공했을 때
                             if (task.isSuccessful()) {
-                                user = firebaseAuth.getCurrentUser();
-                                Intent intent = null;
-
-                                //이미 닉네임이 설정되었을 때
-                                if (user.getDisplayName() != null) {
-                                    intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    Toast.makeText(LoginActivity.this, "반갑습니다! " + user.getDisplayName() + "님", Toast.LENGTH_SHORT).show();
-                                }
-                                //닉네임이 설정되지 않았을 때
-                                else {
-                                    intent = new Intent(LoginActivity.this, InitialActivity.class);
-                                }
-                                startActivity(intent);
-                                finish();
+                                updateUI();
                             }
                             //실패했을 때
                             else {
@@ -119,5 +104,24 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    private void updateUI(){
+        Intent intent = null;
+        user = firebaseAuth.getCurrentUser();
+        //a = user.getDisplayName();
+        //이미 닉네임이 설정되었을 때
+        if (user.getDisplayName() == null) {
+            Log.d("LoginActivity023", "닉네임 설정하기 go to Initial Activity");
+            intent = new Intent(LoginActivity.this, InitialActivity.class);
+        }
+        //닉네임이 설정되지 않았을 때
+        else {
+            Log.d("LoginActivity022", user.getUid());
+            intent = new Intent(LoginActivity.this, MainActivity.class);
+            Toast.makeText(LoginActivity.this, "반갑습니다! " + user.getDisplayName() + "님", Toast.LENGTH_SHORT).show();
+        }
+        startActivity(intent);
+        finish();
     }
 }

@@ -14,16 +14,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".WritePostActivity"
+        <activity android:name=".Activity.WritePostActivity"
             android:windowSoftInputMode="stateVisible|adjustResize">
         </activity>
-        <activity android:name=".ImgTranslateActivity" />
-        <activity android:name=".ProfilemodifyActivity" />
-        <activity android:name=".PicActivity" />
-        <activity android:name=".PicTransActivity" />
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".InitialActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Activity.ImgTranslateActivity" />
+        <activity android:name=".Activity.ProfilemodifyActivity" />
+        <activity android:name=".Activity.PicActivity" />
+        <activity android:name=".Activity.PicTransActivity" />
+        <activity android:name=".Activity.MainActivity"></activity>
+        <activity android:name=".Activity.InitialActivity" />
+        <activity android:name=".Activity.LoginActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignupActivity" />
+        <activity android:name=".Activity.SignupActivity" />
 
         <meta-data
             android:name="com.goolge.android.gms.vision.DEPENDENCIES"

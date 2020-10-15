@@ -7,7 +7,7 @@
     android:background="@android:color/white"
     android:orientation="vertical"
     android:scrollbars="vertical"
-    tools:context=".WritePostActivity">
+    tools:context=".Activity.WritePostActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/write_post_top"

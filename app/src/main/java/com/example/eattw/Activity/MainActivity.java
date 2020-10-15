@@ -1,4 +1,4 @@
-package com.example.eattw;
+package com.example.eattw.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +8,11 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.eattw.Fragment.CommunityFragment;
+import com.example.eattw.Fragment.HomeFragment;
+import com.example.eattw.Fragment.MypageFragment;
+import com.example.eattw.Fragment.TranslateFragment;
+import com.example.eattw.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {

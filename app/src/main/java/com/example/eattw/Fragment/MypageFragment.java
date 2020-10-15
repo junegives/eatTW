@@ -1,10 +1,9 @@
-package com.example.eattw;
+package com.example.eattw.Fragment;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.eattw.Activity.LoginActivity;
+import com.example.eattw.Activity.ProfilemodifyActivity;
+import com.example.eattw.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

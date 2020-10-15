@@ -1,49 +1,36 @@
-package com.example.eattw;
+package com.example.eattw.Fragment;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.eattw.adapter.CommunityAdapter;
+import com.example.eattw.Item.PostInfo;
+import com.example.eattw.R;
+import com.example.eattw.Activity.WritePostActivity;
+import com.example.eattw.Adapter.CommunityAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.core.OrderBy;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -105,6 +92,18 @@ public class CommunityFragment  extends Fragment {
 
         firebaseAuth = firebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
+
+        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_posts);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                reload();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         return view;
     }
@@ -187,7 +186,7 @@ public class CommunityFragment  extends Fragment {
         Log.d(TAG, category + " => " + category);
         postList.clear();
         initRecycler();
-        db.collection(category).get()
+        db.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).whereEqualTo("category", category).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -196,20 +195,25 @@ public class CommunityFragment  extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 postList.add(new PostInfo(
+                                        document.getId(),
+                                        document.getData().get("userID").toString(),
                                         document.getData().get("category").toString(),
                                         document.getData().get("title").toString(),
                                         document.getData().get("content").toString(),
-                                        document.getData().get("publisher").toString(),
+                                        document.getData().get("nickname").toString(),
                                         (ArrayList<String>) document.getData().get("imageList"),
                                         (ArrayList<String>) document.getData().get("desList"),
-                                        new Date(document.getDate("createdAt").getTime())));
+                                        new Date(document.getDate("timestamp").getTime()),
+                                        document.getLong("like").intValue(),
+                                        document.getLong("scrap").intValue(),
+                                        document.getLong("comments").intValue()));
                             }
                             if(postList.size() == 0){
                                 dialog.dismiss();
                                 no_post.setVisibility(View.VISIBLE);
                             }
                             else{
-                                Log.d("hihi", postList.get(0).getCreatedAt().toString());
+                                Log.d("hihi", postList.get(0).getTimestamp().toString());
                                 no_post.setVisibility(View.GONE);
                                 mAdapter.notifyDataSetChanged();
                                 dialog.dismiss();
