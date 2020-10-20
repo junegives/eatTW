@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.eattw.Item.PostInfo;
+import com.example.eattw.Item.UserInfo;
 import com.example.eattw.R;
 import com.example.eattw.Activity.WritePostActivity;
 import com.example.eattw.Adapter.CommunityAdapter;
@@ -179,6 +180,12 @@ public class CommunityFragment  extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mAdapter = new CommunityAdapter(postList, this);
+//        ((CommunityAdapter) mAdapter).setOnItemClickListener(new CommunityAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, int position) {
+//
+//            }
+//        });
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -197,12 +204,9 @@ public class CommunityFragment  extends Fragment {
                                 postList.add(new PostInfo(
                                         document.getId(),
                                         document.getData().get("userID").toString(),
-                                        document.getData().get("category").toString(),
                                         document.getData().get("title").toString(),
                                         document.getData().get("content").toString(),
-                                        document.getData().get("nickname").toString(),
                                         (ArrayList<String>) document.getData().get("imageList"),
-                                        (ArrayList<String>) document.getData().get("desList"),
                                         new Date(document.getDate("timestamp").getTime()),
                                         document.getLong("like").intValue(),
                                         document.getLong("scrap").intValue(),

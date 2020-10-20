@@ -37,6 +37,9 @@ public class TimeCaculator {
         else if(sec > 0){
             ret = sec+"초 전";
         }
+        else if(sec <= 0){
+            ret = "방금";
+        }
         else{
             ret = new SimpleDateFormat("HH:mm").format(date);
         }

@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.eattw.Item.PostInfo;
 import com.example.eattw.R;
 import com.google.android.gms.tasks.Continuation;
@@ -39,7 +42,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import dmax.dialog.SpotsDialog;
@@ -95,7 +100,16 @@ public class WritePostActivity extends AppCompatActivity {
     //사진에 대한 설명
     ArrayList<String> desList = new ArrayList<>();
 
+    ArrayList<LinearLayout> LayoutList = new ArrayList<>();
+    ArrayList<ImageView> ImageViewList = new ArrayList<>();
+    ArrayList<EditText> DesTextList = new ArrayList<>();
+
+    private int count;
+
     private PostInfo postInfo;
+    private String postID;
+    private boolean modifed = false;
+    private Date OriginDate = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +155,22 @@ public class WritePostActivity extends AppCompatActivity {
         et_image4 = (EditText) findViewById(R.id.et_image4);
         et_image5 = (EditText) findViewById(R.id.et_image5);
 
+        LayoutList = new ArrayList<LinearLayout>(
+                Arrays.asList(image1, image2, image3, image4, image5)
+        );
+
+        ImageViewList = new ArrayList<ImageView>(
+                Arrays.asList(iv_image1, iv_image2, iv_image3, iv_image4, iv_image5)
+        );
+
+        DesTextList = new ArrayList<EditText>(
+                Arrays.asList(et_image1, et_image2, et_image3, et_image4, et_image5)
+        );
+
+        for (int i = 0; i < LayoutList.size(); i++) {
+            LayoutList.get(i).setVisibility(View.GONE);
+        }
+
         findViewById(R.id.btn_write_close).setOnClickListener(onClickListener);
         findViewById(R.id.btn_write_done).setOnClickListener(onClickListener);
         findViewById(R.id.btn_write_image).setOnClickListener(onClickListener);
@@ -158,7 +188,8 @@ public class WritePostActivity extends AppCompatActivity {
 
         //수정
         postInfo = (PostInfo) getIntent().getSerializableExtra("postInfo");
-        //postInit();
+        postID = (String) getIntent().getSerializableExtra("postID");
+        postInit();
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -271,48 +302,8 @@ public class WritePostActivity extends AppCompatActivity {
 
     private void addImage(Uri imageURI) {
         imageList.add(imageURI.toString());
-        if (imageList.size() == 1) {
-            image1.setVisibility(View.VISIBLE);
-            image2.setVisibility(View.GONE);
-            image3.setVisibility(View.GONE);
-            image4.setVisibility(View.GONE);
-            image5.setVisibility(View.GONE);
-
-            iv_image1.setImageURI(imageURI);
-
-        } else if (imageList.size() == 2) {
-            image1.setVisibility(View.VISIBLE);
-            image2.setVisibility(View.VISIBLE);
-            image3.setVisibility(View.GONE);
-            image4.setVisibility(View.GONE);
-            image5.setVisibility(View.GONE);
-
-            iv_image2.setImageURI(imageURI);
-        } else if (imageList.size() == 3) {
-            image1.setVisibility(View.VISIBLE);
-            image2.setVisibility(View.VISIBLE);
-            image3.setVisibility(View.VISIBLE);
-            image4.setVisibility(View.GONE);
-            image5.setVisibility(View.GONE);
-
-            iv_image3.setImageURI(imageURI);
-        } else if (imageList.size() == 4) {
-            image1.setVisibility(View.VISIBLE);
-            image2.setVisibility(View.VISIBLE);
-            image3.setVisibility(View.VISIBLE);
-            image4.setVisibility(View.VISIBLE);
-            image5.setVisibility(View.GONE);
-
-            iv_image4.setImageURI(imageURI);
-        } else if (imageList.size() == 5) {
-            image1.setVisibility(View.VISIBLE);
-            image2.setVisibility(View.VISIBLE);
-            image3.setVisibility(View.VISIBLE);
-            image4.setVisibility(View.VISIBLE);
-            image5.setVisibility(View.VISIBLE);
-
-            iv_image5.setImageURI(imageURI);
-        }
+        LayoutList.get(imageList.size() - 1).setVisibility(View.VISIBLE);
+        ImageViewList.get(imageList.size() - 1).setImageURI(imageURI);
 
         scrollView.post(new Runnable() {
 
@@ -325,65 +316,24 @@ public class WritePostActivity extends AppCompatActivity {
 
     private void deleteImg(int id) {
         imageList.remove(id - 1);
-        //Toast.makeText(this, ""+imageList.size(), Toast.LENGTH_SHORT).show();
 
-        if (imageList.size() == 0) {
-            image1.setVisibility(View.GONE);
-            image2.setVisibility(View.GONE);
-            image3.setVisibility(View.GONE);
-            image4.setVisibility(View.GONE);
-            image5.setVisibility(View.GONE);
-
-            iv_image1.setImageResource(0);
+        //삭제한 이미지의 번호(1,2,3,4,5)가 이미지 리스트의 사이즈(0,1,2,3,4)보다 작거나 같을 때
+        //즉, 이미지 리스트의 마지막 이미지가 아닌 앞의 이미지를 삭제했을 때
+        //뒤에 이미지를 앞에 레이아웃에 넣어야함
+        if (id <= imageList.size()) {
+            for (int i = id - 1; i <= imageList.size() - 1; i++) {
+                Glide.with(this)
+                        .load(Uri.parse(imageList.get(i)))
+                        .override(300, 300)
+                        .thumbnail(0.1f)
+                        .into(ImageViewList.get(i));
+                DesTextList.get(i).setText(DesTextList.get(i + 1).getText());
+            }
         }
 
-        if (imageList.size() == 1) {
-            image1.setVisibility(View.VISIBLE);
-            image2.setVisibility(View.GONE);
-            image3.setVisibility(View.GONE);
-            image4.setVisibility(View.GONE);
-            image5.setVisibility(View.GONE);
-
-            iv_image2.setImageResource(0);
-
-            iv_image1.setImageURI(Uri.parse(imageList.get(0)));
-        } else if (imageList.size() == 2) {
-            image1.setVisibility(View.VISIBLE);
-            image2.setVisibility(View.VISIBLE);
-            image3.setVisibility(View.GONE);
-            image4.setVisibility(View.GONE);
-            image5.setVisibility(View.GONE);
-
-            iv_image3.setImageResource(0);
-
-            iv_image1.setImageURI(Uri.parse(imageList.get(0)));
-            iv_image2.setImageURI(Uri.parse(imageList.get(1)));
-        } else if (imageList.size() == 3) {
-            image1.setVisibility(View.VISIBLE);
-            image2.setVisibility(View.VISIBLE);
-            image3.setVisibility(View.VISIBLE);
-            image4.setVisibility(View.GONE);
-            image5.setVisibility(View.GONE);
-
-            iv_image4.setImageResource(0);
-
-            iv_image1.setImageURI(Uri.parse(imageList.get(0)));
-            iv_image2.setImageURI(Uri.parse(imageList.get(1)));
-            iv_image3.setImageURI(Uri.parse(imageList.get(2)));
-        } else if (imageList.size() == 4) {
-            image1.setVisibility(View.VISIBLE);
-            image2.setVisibility(View.VISIBLE);
-            image3.setVisibility(View.VISIBLE);
-            image4.setVisibility(View.VISIBLE);
-            image5.setVisibility(View.GONE);
-
-            iv_image5.setImageResource(0);
-
-            iv_image1.setImageURI(Uri.parse(imageList.get(0)));
-            iv_image2.setImageURI(Uri.parse(imageList.get(1)));
-            iv_image3.setImageURI(Uri.parse(imageList.get(2)));
-            iv_image4.setImageURI(Uri.parse(imageList.get(3)));
-        }
+        LayoutList.get(imageList.size()).setVisibility(View.GONE);
+        ImageViewList.get(imageList.size()).setImageResource(0);
+        DesTextList.get(imageList.size()).setText("");
     }
 
     private void storageUpload() {
@@ -393,85 +343,96 @@ public class WritePostActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference storageRef = storage.getReference();
 
+        count = imageList.size();
+
+        if (!modifed) {
+            OriginDate = new Date();
+        }
+
         if (title.length() > 0 && content.length() > 0) {
             user = firebaseAuth.getCurrentUser();
 
             if (imageList.size() == 0) {
-                PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, user.getDisplayName(), imageList, desList, new Date(), 0, 0, 0);
+                PostInfo postInfo;
+                postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
                 uploader(postInfo);
             } else {
-                int i = 0;
-                for (i = 0; i < imageList.size(); i++) {
-                    Uri file = Uri.parse(imageList.get(i));
-
-                    final StorageReference riversRef = storageRef.child("images/" + user.getUid() + "/" + file.getLastPathSegment());
-                    UploadTask uploadTask = riversRef.putFile(file);
-
-                    final int finalI = i;
-                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                Log.d("이미지 업로드", "실패");
-                                throw task.getException();
+                for (int i = 0; i < imageList.size(); i++) {
+                    if (imageList.get(i).contains("https://firebasestorage.googleapis.com/v0/b/eattw-9bd91.appspot.com")) {
+                        desList.add("");
+                        imageList.set(i, imageList.get(i));
+                        count--;
+                        if (DesTextList.get(i).getText().toString().getBytes().length <= 0) {
+                            Log.d("ImageTest" + i, "null");
+                            desList.set(i, "");
+                            if (count == 0) {
+                                Log.d("사진 다넣었다진짜로", imageList.size() + "\n사진 : " + imageList.toString());
+                                PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
+                                uploader(postInfo);
                             }
-
-                            // Continue with the task to get the download URL
-                            return riversRef.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                Uri downloadUri = task.getResult();
-                                Log.d("TestImageDownload", "성공: " + downloadUri);
-                                if (finalI == 0) {
-                                    imageList.set(0, downloadUri.toString());
-                                    desList.add(et_image1.getText().toString());
-//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image1.getText().toString());
-//                                    img.add(imgInfo);
-//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
-                                    Log.d("사진 넣는중!!", "하나");
-                                } else if (finalI == 1) {
-                                    imageList.set(1, downloadUri.toString());
-                                    desList.add(et_image2.getText().toString());
-//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image2.getText().toString());
-//                                    img.add(imgInfo);
-//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
-                                    Log.d("사진 넣는중!!", "둘");
-                                } else if (finalI == 2) {
-                                    imageList.set(2, downloadUri.toString());
-                                    desList.add(et_image3.getText().toString());
-//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image3.getText().toString());
-//                                    img.add(imgInfo);
-//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
-                                    Log.d("사진 넣는중!!", "셋");
-                                } else if (finalI == 3) {
-                                    imageList.set(3, downloadUri.toString());
-                                    desList.add(et_image4.getText().toString());
-//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image4.getText().toString());
-//                                    img.add(imgInfo);
-//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
-                                    Log.d("사진 넣는중!!", "넷");
-                                } else if (finalI == 4) {
-                                    imageList.set(4, downloadUri.toString());
-                                    desList.add(et_image5.getText().toString());
-//                                    ImgInfo imgInfo = new ImgInfo(downloadUri.toString(), et_image5.getText().toString());
-//                                    img.add(imgInfo);
-//                                    Log.d("사진 다넣었다", img.size() + "\n사진 : " + img.toString());
-                                    Log.d("사진 넣는중!!", "다섯");
-                                }
-                                //마지막 사진까지 다 for문 돌렸을 때
-                                if (finalI == imageList.size() - 1) {
-//                                    Log.d("사진 다넣었다진짜로", img.size() + "\n사진 : " + img.toString());
-                                    PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, user.getDisplayName(), imageList, desList, new Date(), 0, 0, 0);
-                                    uploader(postInfo);
-                                }
-                            } else {
-                                Log.d("TestImageDownload", "실패");
+                        } else {
+                            Log.d("ImageTest" + i, DesTextList.get(i).getText().toString());
+                            //desList.add(et_image1.getText().toString());
+                            desList.set(i, DesTextList.get(i).getText().toString());
+                            if (count == 0) {
+                                Log.d("사진 다넣었다진짜로", imageList.size() + "\n사진 : " + imageList.toString());
+                                PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
+                                uploader(postInfo);
                             }
                         }
-                    });
+                    } else {
+                        Uri file = Uri.parse(imageList.get(i));
+                        Log.d("ImageTest", "ImageList.size()" + imageList.size());
+                        Log.d("ImageTest", "i" + i);
+                        desList.add("");
+
+                        final StorageReference riversRef = storageRef.child("images/" + user.getUid() + "/" + file.getLastPathSegment());
+                        UploadTask uploadTask = riversRef.putFile(file);
+
+                        final int finalI = i;
+                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    Log.d("이미지 업로드", "실패");
+                                    throw task.getException();
+                                }
+
+                                // Continue with the task to get the download URL
+                                return riversRef.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri downloadUri = task.getResult();
+                                    Log.d("TestImageDownload", "성공: " + downloadUri);
+                                    imageList.set(finalI, downloadUri.toString());
+                                    count--;
+                                    if (DesTextList.get(finalI).getText().toString().getBytes().length <= 0) {
+                                        Log.d("ImageTest" + finalI, "null");
+                                        desList.set(finalI, "");
+                                        if (count == 0) {
+                                            Log.d("사진 다넣었다진짜로", imageList.size() + "\n사진 : " + imageList.toString());
+                                            PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
+                                            uploader(postInfo);
+                                        }
+                                    } else {
+                                        Log.d("ImageTest" + finalI, DesTextList.get(finalI).getText().toString());
+                                        //desList.add(et_image1.getText().toString());
+                                        desList.set(finalI, DesTextList.get(finalI).getText().toString());
+                                        if (count == 0) {
+                                            Log.d("사진 다넣었다진짜로", imageList.size() + "\n사진 : " + imageList.toString());
+                                            PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
+                                            uploader(postInfo);
+                                        }
+                                    }
+                                } else {
+                                    Log.d("TestImageDownload", "실패");
+                                }
+                            }
+                        });
+                    }
                 }
             }
         } else if (title.length() <= 0) {
@@ -485,23 +446,41 @@ public class WritePostActivity extends AppCompatActivity {
         }
     }
 
-    private void uploader(PostInfo postInfo) {
+    private void uploader(final PostInfo postInfo) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Posts").add(postInfo)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
-        waitingDialog.dismiss();
-        finish();
+        if (modifed) {
+            db.collection("Posts").document(postID).set(postInfo)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error writing document", e);
+                        }
+                    });
+            waitingDialog.dismiss();
+            finish();
+        } else {
+            db.collection("Posts").add(postInfo)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
+                        }
+                    });
+            waitingDialog.dismiss();
+            finish();
+        }
     }
 
     private void showAlert(final int id) {
@@ -520,5 +499,29 @@ public class WritePostActivity extends AppCompatActivity {
                 });
         builder.show();
 
+    }
+
+    private void postInit() {
+        if (postInfo != null) {
+            modifed = true;
+            et_title.setText(postInfo.getTitle());
+            et_content.setText(postInfo.getContent());
+            OriginDate = postInfo.getTimestamp();
+            ArrayList<String> ImageList = postInfo.getImageList();
+            ArrayList<String> DesList = postInfo.getDesList();
+            imageList.addAll(ImageList);
+            for (int i = 0; i < ImageList.size(); i++) {
+                Log.d("ModifyTest", "ImageList.size() : " + ImageList.size());
+                LayoutList.get(i).setVisibility(View.VISIBLE);
+                ImageViewList.get(i).setVisibility(View.VISIBLE);
+                Glide.with(this)
+                        .load(Uri.parse(ImageList.get(i)))
+                        .override(300, 300)
+                        .thumbnail(0.1f)
+                        .into(ImageViewList.get(i));
+                DesTextList.get(i).setText(DesList.get(i));
+                Log.d("ModifyTest", "DesList.get(i) : " + DesList.get(i));
+            }
+        }
     }
 }

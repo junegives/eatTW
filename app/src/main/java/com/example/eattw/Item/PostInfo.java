@@ -1,30 +1,35 @@
 package com.example.eattw.Item;
 
+import android.net.Uri;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PostInfo {
+public class PostInfo  implements Serializable {
     private String postID;
     private String userID;
     private String category;
     private String title;
     private String content;
-    private String nickname;
     private ArrayList<String> imageList = new ArrayList<String>();
     private ArrayList<String> desList = new ArrayList<String>();
     private Date timestamp;
     private int like;
     private int scrap;
     private int comments;
+    DocumentReference userRef;
 
     //처음 등록할 때
-    public PostInfo(String userID, String category, String title, String content, String nickname, ArrayList<String> imageList, ArrayList<String> desList, Date timestamp, int like, int scrap, int comments) {
+    public PostInfo(String userID, String category, String title, String content, ArrayList<String> imageList, ArrayList<String> desList, Date timestamp, int like, int scrap, int comments) {
         this.userID = userID;
         this.category = category;
         this.title = title;
         this.content = content;
-        this.nickname = nickname;
         this.imageList = imageList;
         this.desList = desList;
         this.timestamp = timestamp;
@@ -33,14 +38,26 @@ public class PostInfo {
         this.comments = comments;
     }
 
-    //다음 가져올 때
-    public PostInfo(String postID, String userID, String category, String title, String content, String nickname, ArrayList<String> imageList, ArrayList<String> desList, Date timestamp, int like, int scrap, int comments) {
+    //목록에 필요한 정보 가져올 때
+    public PostInfo(String postID, String userID, String title, String content, ArrayList<String> imageList, Date timestamp, int like, int scrap, int comments){
+        this.postID = postID;
+        this.userID = userID;
+        this.title = title;
+        this.content = content;
+        this.imageList = imageList;
+        this.timestamp = timestamp;
+        this.like = like;
+        this.scrap = scrap;
+        this.comments = comments;
+    }
+
+    //게시글 정보 전체 가져올 때
+    public PostInfo(String postID, String userID, String category, String title, String content, ArrayList<String> imageList, ArrayList<String> desList, Date timestamp, int like, int scrap, int comments) {
         this.postID = postID;
         this.userID = userID;
         this.category = category;
         this.title = title;
         this.content = content;
-        this.nickname = nickname;
         this.imageList = imageList;
         this.desList = desList;
         this.timestamp = timestamp;
@@ -87,14 +104,6 @@ public class PostInfo {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
     }
 
     public ArrayList<String> getImageList() {

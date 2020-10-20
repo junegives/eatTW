@@ -14,17 +14,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.WritePostActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize">
-        </activity>
+        <activity android:name=".Activity.ReadPostActivity"></activity>
+        <activity
+            android:name=".Activity.WritePostActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
         <activity android:name=".Activity.ImgTranslateActivity" />
         <activity android:name=".Activity.ProfilemodifyActivity" />
         <activity android:name=".Activity.PicActivity" />
         <activity android:name=".Activity.PicTransActivity" />
-        <activity android:name=".Activity.MainActivity"></activity>
+        <activity android:name=".Activity.MainActivity" />
         <activity android:name=".Activity.InitialActivity" />
         <activity android:name=".Activity.LoginActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

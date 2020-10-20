@@ -100,7 +100,7 @@
             android:id="@+id/tv_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="두비두밥"
+            android:text="•••"
             android:gravity="center_horizontal"/>
 
         <View
@@ -108,21 +108,24 @@
             android:layout_height="match_parent"
             android:background="#DDDDDD"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            android:visibility="gone"/>
 
         <View
             android:id="@+id/like_icon"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:background="@drawable/like_empty"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/like_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="10"/>
+            android:text="10"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

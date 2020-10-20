@@ -7,25 +7,21 @@ public class CommentInfo {
     private String postID;
     private String userID;
     private String comment;
-    private String nickname;
     private int like;
     private Date timestamp;
 
-    public CommentInfo(String postID, String userID, String comment, String nickname, int like, Date timestamp){
+    public CommentInfo(String postID, String userID, String comment, Date timestamp){
         this.postID = postID;
         this.userID = userID;
         this.comment = comment;
-        this.nickname = nickname;
-        this.like = like;
         this.timestamp = timestamp;
     }
 
-    public CommentInfo(String commentID, String postID, String userID, String comment, String nickname, int like, Date timestamp){
+    public CommentInfo(String commentID, String postID, String userID, String comment, int like, Date timestamp){
         this.commentID = commentID;
         this.postID = postID;
         this.userID = userID;
         this.comment = comment;
-        this.nickname = nickname;
         this.like = like;
         this.timestamp = timestamp;
     }
@@ -60,14 +56,6 @@ public class CommentInfo {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
     }
 
     public int getLike() {

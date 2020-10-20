@@ -25,14 +25,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.eattw.Item.UserInfo;
 import com.example.eattw.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -49,6 +53,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 
 public class InitialActivity extends AppCompatActivity {
+
+    private static final String TAG = "InitialActivity";
 
     private CircleImageView image_profile;
     private EditText et_nick;
@@ -389,6 +395,10 @@ public class InitialActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
+
+                        com.example.eattw.Item.UserInfo userInfo = new com.example.eattw.Item.UserInfo(user.getUid(), et_nick.getText().toString(), "");
+                        uploader(userInfo);
+
                         waitingDialog.dismiss();
                         Log.d("profile", "User profile updated.");
                         Intent intent = new Intent(InitialActivity.this, MainActivity.class);
@@ -421,7 +431,7 @@ public class InitialActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
+                        final Uri downloadUri = task.getResult();
                         Log.d("TestImageDownload", "성공: " + downloadUri);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(et_nick.getText().toString())
@@ -432,6 +442,10 @@ public class InitialActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
+
+                                    com.example.eattw.Item.UserInfo userInfo = new com.example.eattw.Item.UserInfo(user.getUid(), et_nick.getText().toString(), downloadUri.toString());
+                                    uploader(userInfo);
+
                                     waitingDialog.dismiss();
                                     Log.d("profile", "User profile updated.");
                                     Intent intent = new Intent(InitialActivity.this, MainActivity.class);
@@ -451,5 +465,23 @@ public class InitialActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void uploader(UserInfo userInfo) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Users").document(user.getUid()).set(userInfo)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot written with ID: " + user.getUid());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+        finish();
     }
 }
