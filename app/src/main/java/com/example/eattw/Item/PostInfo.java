@@ -12,7 +12,6 @@ import java.util.Date;
 
 public class PostInfo  implements Serializable {
     private String postID;
-    private String userID;
     private String category;
     private String title;
     private String content;
@@ -22,11 +21,10 @@ public class PostInfo  implements Serializable {
     private int like;
     private int scrap;
     private int comments;
-    DocumentReference userRef;
+    private DocumentReference userRef;
 
     //처음 등록할 때
-    public PostInfo(String userID, String category, String title, String content, ArrayList<String> imageList, ArrayList<String> desList, Date timestamp, int like, int scrap, int comments) {
-        this.userID = userID;
+    public PostInfo(String category, String title, String content, ArrayList<String> imageList, ArrayList<String> desList, Date timestamp, int like, int scrap, int comments, DocumentReference userRef) {
         this.category = category;
         this.title = title;
         this.content = content;
@@ -36,12 +34,12 @@ public class PostInfo  implements Serializable {
         this.like = like;
         this.scrap = scrap;
         this.comments = comments;
+        this.userRef = userRef;
     }
 
     //목록에 필요한 정보 가져올 때
-    public PostInfo(String postID, String userID, String title, String content, ArrayList<String> imageList, Date timestamp, int like, int scrap, int comments){
+    public PostInfo(String postID, String title, String content, ArrayList<String> imageList, Date timestamp, int like, int scrap, int comments, DocumentReference userRef){
         this.postID = postID;
-        this.userID = userID;
         this.title = title;
         this.content = content;
         this.imageList = imageList;
@@ -49,12 +47,12 @@ public class PostInfo  implements Serializable {
         this.like = like;
         this.scrap = scrap;
         this.comments = comments;
+        this.userRef = userRef;
     }
 
     //게시글 정보 전체 가져올 때
-    public PostInfo(String postID, String userID, String category, String title, String content, ArrayList<String> imageList, ArrayList<String> desList, Date timestamp, int like, int scrap, int comments) {
+    public PostInfo(String postID, String category, String title, String content, ArrayList<String> imageList, ArrayList<String> desList, Date timestamp, int like, int scrap, int comments, DocumentReference userRef) {
         this.postID = postID;
-        this.userID = userID;
         this.category = category;
         this.title = title;
         this.content = content;
@@ -64,14 +62,7 @@ public class PostInfo  implements Serializable {
         this.like = like;
         this.scrap = scrap;
         this.comments = comments;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
+        this.userRef = userRef;
     }
 
     public String getPostID() {
@@ -152,5 +143,13 @@ public class PostInfo  implements Serializable {
 
     public void setComments(int comments) {
         this.comments = comments;
+    }
+
+    public DocumentReference getUserRef() {
+        return userRef;
+    }
+
+    public void setUserRef(DocumentReference userRef) {
+        this.userRef = userRef;
     }
 }

@@ -22,12 +22,15 @@ import com.example.eattw.Helper.TimeCaculator;
 import com.example.eattw.Item.PostInfo;
 import com.example.eattw.Item.UserInfo;
 import com.example.eattw.R;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.BufferedInputStream;
@@ -52,16 +55,6 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
         Fcontext = context;
         db = FirebaseFirestore.getInstance();
     }
-
-//    public interface OnItemClickListener {
-//        void onItemClick(View view, int position);
-//    }
-//
-//    OnItemClickListener mListener;
-//
-//    public void setOnItemClickListener(OnItemClickListener listener) {
-//        mListener = listener;
-//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView tv_title;
@@ -125,7 +118,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
             Log.d("postInfo.getImg()", "null");
             holder.iv_image.setVisibility(View.GONE);
         }
-        else{
+        else {
             holder.iv_image.setVisibility(View.VISIBLE);
             Log.d("postgetImg", postInfo.getImageList().get(0));
             //holder.iv_image.setImageURI(Uri.parse(postInfo.getImageList().get(0)));
@@ -134,9 +127,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
                     .override(300, 300)
                     .thumbnail(0.1f)
                     .into(holder.iv_image);
-            }
-
-        holder.tv_comment.setText(String.valueOf(postInfo.getComments()));
+        }
 
         TimeCaculator timeCaculator = new TimeCaculator();
         holder.tv_timestamp.setText(
@@ -159,31 +150,44 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
 
     public void getCommentsCount(final TextView tv_comment){
 
-        db.collection("Posts/" + postInfo.getPostID() + "/Comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
+//        db.collection("Posts/" + postInfo.getPostID() + "/Comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+//
+//                try{
+//                    if (!documentSnapshots.isEmpty()) {
+//
+//                        int count = documentSnapshots.size();
+//                        tv_comment.setText("["+count+"]");
+//                    } else {
+//                        tv_comment.setText("");
+//                    }
+//                }
+//                catch (NullPointerException npe){
+//                    npe.printStackTrace();
+//                }
+//
+//            }
+//        });
+
+        db.collection("Posts/" + postInfo.getPostID() + "/Comments").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-
-                try{
-                    if (!documentSnapshots.isEmpty()) {
-
-                        int count = documentSnapshots.size();
-                        tv_comment.setText(String.valueOf(count));
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    int count = task.getResult().size();
+                    if(count > 0){
+                        tv_comment.setText("["+count+"]");
                     } else {
-                        tv_comment.setText("0");
+                        tv_comment.setText("");
                     }
-                }
-                catch (NullPointerException npe){
-                    npe.printStackTrace();
                 }
 
             }
         });
     }
 
-    public void getUserData(final TextView tv_nickname){
-        Log.d("getDataTest", "getUserData()");
-
-        db.collection("Users").document(postInfo.getUserID()).get()
+    public void getUserData(final  TextView tv_nickname){
+        postInfo.getUserRef().get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -204,6 +208,31 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
                     }
                 });
     }
+
+//    public void getUserData(final TextView tv_nickname){
+//        Log.d("getDataTest", "getUserData()");
+//
+//        db.collection("Users").document(postInfo.getUserID()).get()
+//                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                        if (task.isSuccessful()) {
+//
+//                            Log.d("errorTAG", task.getResult().toString());
+//                            DocumentSnapshot document = task.getResult();
+//                            if(document.exists()){
+//                                Log.d("errorTAG", "5");
+//                                tv_nickname.setText(document.getData().get("nickname").toString());
+//                            }
+//                            else{
+//                                tv_nickname.setText("존재하지 않는 회원");
+//                            }
+//                        } else {
+//                            Log.d("errorTAG", "6");
+//                        }
+//                    }
+//                });
+//    }
 
     @Override
     public int getItemCount() {

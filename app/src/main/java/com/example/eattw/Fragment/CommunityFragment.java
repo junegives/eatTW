@@ -31,7 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.core.OrderBy;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -203,14 +202,14 @@ public class CommunityFragment  extends Fragment {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 postList.add(new PostInfo(
                                         document.getId(),
-                                        document.getData().get("userID").toString(),
                                         document.getData().get("title").toString(),
                                         document.getData().get("content").toString(),
                                         (ArrayList<String>) document.getData().get("imageList"),
                                         new Date(document.getDate("timestamp").getTime()),
                                         document.getLong("like").intValue(),
                                         document.getLong("scrap").intValue(),
-                                        document.getLong("comments").intValue()));
+                                        document.getLong("comments").intValue(),
+                                        document.getDocumentReference("userRef")));
                             }
                             if(postList.size() == 0){
                                 dialog.dismiss();
@@ -229,61 +228,4 @@ public class CommunityFragment  extends Fragment {
                     }
                 });
     }
-
-    //글 쓰는건 D\android\android\clamp\NewPostActivity.java 참고
-
-    //이게 찐
-//    private void readPost() {
-//        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-//        firebaseFirestore.collection("Posts").document(postid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-//            @Override
-//            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-//                blogPostList.clear();
-//                BlogPost blogPost = documentSnapshot.toObject(BlogPost.class);
-//                blogPostList.add(blogPost);
-//
-//                blogRecyclerAdapter.notifyDataSetChanged();
-//
-//            }
-//        });
-//    }
-
-//    private void readPostsFromDB()
-//    {
-//        // Read from the database
-//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    String id = snapshot.getKey();
-//                    final Post post = snapshot.getValue(Post.class);
-//                    post.setId(id);
-//                    DatabaseReference userRef = database.getReference("Users").child(post.getUserId());
-//                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            // cast datasnapshot to User
-//                            User user = dataSnapshot.getValue(User.class);
-//                            post.setUser(user);
-//
-//                            // apend post to list (posts)
-//                            posts.add(post);
-//                            postAdapter.notifyDataSetChanged();
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                        }
-//                    });
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                Toast.makeText(getActivity(), " "+error.toException(), Toast.LENGTH_LONG).show();
-//            }
-//        });
-//    }
 }

@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="글 쓰기"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="@id/btn_write_close"
             app:layout_constraintEnd_toStartOf="@+id/btn_write_done"
             app:layout_constraintStart_toEndOf="@+id/btn_write_close"
@@ -75,7 +75,7 @@
                     android:padding="15dp"
                     android:text="카테고리"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"
+                    android:textSize="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

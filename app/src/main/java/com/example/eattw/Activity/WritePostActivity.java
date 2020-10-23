@@ -78,6 +78,7 @@ public class WritePostActivity extends AppCompatActivity {
 
     private ScrollView scrollView;
 
+    FirebaseFirestore db;
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
 
@@ -117,6 +118,7 @@ public class WritePostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_write_post);
 
         firebaseAuth = firebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         spinner = (Spinner) findViewById(R.id.spinner_select_category);
 
@@ -354,7 +356,7 @@ public class WritePostActivity extends AppCompatActivity {
 
             if (imageList.size() == 0) {
                 PostInfo postInfo;
-                postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
+                postInfo = new PostInfo(category, title, content, imageList, desList, OriginDate, 0, 0, 0, db.collection("Users").document(user.getUid()));
                 uploader(postInfo);
             } else {
                 for (int i = 0; i < imageList.size(); i++) {
@@ -367,7 +369,7 @@ public class WritePostActivity extends AppCompatActivity {
                             desList.set(i, "");
                             if (count == 0) {
                                 Log.d("사진 다넣었다진짜로", imageList.size() + "\n사진 : " + imageList.toString());
-                                PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
+                                PostInfo postInfo = new PostInfo(category, title, content, imageList, desList, OriginDate, 0, 0, 0, db.collection("Users").document(user.getUid()));
                                 uploader(postInfo);
                             }
                         } else {
@@ -376,7 +378,7 @@ public class WritePostActivity extends AppCompatActivity {
                             desList.set(i, DesTextList.get(i).getText().toString());
                             if (count == 0) {
                                 Log.d("사진 다넣었다진짜로", imageList.size() + "\n사진 : " + imageList.toString());
-                                PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
+                                PostInfo postInfo = new PostInfo(category, title, content, imageList, desList, OriginDate, 0, 0, 0, db.collection("Users").document(user.getUid()));
                                 uploader(postInfo);
                             }
                         }
@@ -414,7 +416,7 @@ public class WritePostActivity extends AppCompatActivity {
                                         desList.set(finalI, "");
                                         if (count == 0) {
                                             Log.d("사진 다넣었다진짜로", imageList.size() + "\n사진 : " + imageList.toString());
-                                            PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
+                                            PostInfo postInfo = new PostInfo(category, title, content, imageList, desList, OriginDate, 0, 0, 0, db.collection("Users").document(user.getUid()));
                                             uploader(postInfo);
                                         }
                                     } else {
@@ -423,7 +425,7 @@ public class WritePostActivity extends AppCompatActivity {
                                         desList.set(finalI, DesTextList.get(finalI).getText().toString());
                                         if (count == 0) {
                                             Log.d("사진 다넣었다진짜로", imageList.size() + "\n사진 : " + imageList.toString());
-                                            PostInfo postInfo = new PostInfo(user.getUid(), category, title, content, imageList, desList, OriginDate, 0, 0, 0);
+                                            PostInfo postInfo = new PostInfo(category, title, content, imageList, desList, OriginDate, 0, 0, 0, db.collection("Users").document(user.getUid()));
                                             uploader(postInfo);
                                         }
                                     }
@@ -447,7 +449,6 @@ public class WritePostActivity extends AppCompatActivity {
     }
 
     private void uploader(final PostInfo postInfo) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         if (modifed) {
             db.collection("Posts").document(postID).set(postInfo)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {

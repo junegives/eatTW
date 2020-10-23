@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="모든 메뉴 번역!\n메뉴판을 촬영해보세요"
-            android:textSize="20sp"
+            android:textSize="20dp"
             android:textColor="@android:color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
             android:background="@drawable/login_round"
             style="?android:attr/borderlessButtonStyle"
             android:text="GO"
-            android:textSize="20sp"
+            android:textSize="20dp"
             android:textColor="@android:color/white"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -247,7 +247,7 @@
             android:maxLines="10"
             android:scrollbars="vertical"
             android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            android:textSize="20dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

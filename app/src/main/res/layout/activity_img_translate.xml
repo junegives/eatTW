@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="아래의 버튼을 눌러\n메뉴판을 촬영해보세요"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:textColor="@android:color/black"
         android:gravity="center_horizontal" />
 

@@ -24,37 +24,21 @@
             android:maxLines="1"
             android:maxWidth="200dp"
             android:ellipsize="end"
-            android:text="안녕하세요"
+            android:text="•••"
             android:textColor="@android:color/black"
-            android:textSize="17sp"
+            android:textSize="17dp"
             android:textStyle="bold"
             android:layout_gravity="center"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="17sp"
-            android:textColor="#ff6837"
-            android:layout_marginLeft="10dp"
-            android:layout_gravity="center_vertical"
-            android:text="["/>
 
         <TextView
             android:id="@+id/tv_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12"
-            android:textSize="17sp"
+            android:text=""
+            android:textSize="17dp"
             android:textColor="#ff6837"
+            android:layout_marginLeft="10dp"
             android:layout_gravity="center_vertical"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="17sp"
-            android:textColor="#ff6837"
-            android:layout_gravity="center_vertical"
-            android:text="]"/>
 
     </LinearLayout>
 
@@ -63,8 +47,8 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:text="내용입니다"
-        android:textSize="16sp"
+        android:text="Loading..."
+        android:textSize="16dp"
         app:layout_constraintBottom_toTopOf="@id/layout_info"
         app:layout_constraintEnd_toStartOf="@+id/iv_image"
         app:layout_constraintHorizontal_bias="0"

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -12,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:background="#C1E1FA"
+        android:background="#ffffff"
         android:elevation="10dp"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +30,7 @@
             android:gravity="center"
             android:text="커뮤니티 게시판"
             android:textColor="@android:color/black"
-            android:textSize="19sp"
+            android:textSize="19dp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -60,8 +61,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
-        android:id="@+id/post_scrollview"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_read_post"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/Layout_add_comment"
@@ -69,227 +70,234 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/community_top">
 
-        <LinearLayout
-            android:id="@+id/layout_body"
+        <ScrollView
+            android:id="@+id/post_scrollview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="0dp">
 
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_header"
+            <LinearLayout
+                android:id="@+id/layout_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:padding="15dp">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/iv_post_image"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:background="@drawable/mandoo_profile"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:padding="15dp">
+
+                    <ImageView
+                        android:id="@+id/iv_post_image"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:background="@drawable/mandoo_profile"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_post_nickname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="                "
+                        android:textColor="@android:color/black"
+                        android:textSize="18dp"
+                        app:layout_constraintBottom_toTopOf="@id/layout_info"
+                        app:layout_constraintStart_toEndOf="@id/iv_post_image"
+                        app:layout_constraintTop_toTopOf="@id/iv_post_image" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_post_image"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintStart_toEndOf="@id/iv_post_image"
+                        app:layout_constraintTop_toBottomOf="@id/tv_post_nickname">
+
+                        <TextView
+                            android:id="@+id/tv_post_category"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="        " />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="#DDDDDD" />
+
+                        <TextView
+                            android:id="@+id/tv_post_timestamp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="              " />
+
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/btn_mypost"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_meatball_black_24dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <!--                <ImageButton-->
+                    <!--                    android:id="@+id/btn_like"-->
+                    <!--                    android:layout_width="40dp"-->
+                    <!--                    android:layout_height="40dp"-->
+                    <!--                    app:layout_constraintTop_toTopOf="parent"-->
+                    <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--                    app:layout_constraintEnd_toStartOf="@id/btn_scrap"-->
+                    <!--                    android:src="@drawable/like_empty_icon"-->
+                    <!--                    android:layout_marginRight="5dp"-->
+                    <!--                    android:background="@android:color/transparent"/>-->
+
+                    <!--                <ImageButton-->
+                    <!--                    android:id="@+id/btn_scrap"-->
+                    <!--                    android:layout_width="40dp"-->
+                    <!--                    android:layout_height="40dp"-->
+                    <!--                    app:layout_constraintTop_toTopOf="parent"-->
+                    <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                    android:src="@drawable/star_empty_icon"-->
+                    <!--                    android:background="@android:color/transparent"/>-->
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
-                    android:id="@+id/tv_post_nickname"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_post_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="                "
+                    android:paddingLeft="20dp"
+                    android:text="          "
                     android:textColor="@android:color/black"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toTopOf="@id/layout_info"
-                    app:layout_constraintStart_toEndOf="@id/iv_post_image"
-                    app:layout_constraintTop_toTopOf="@id/iv_post_image" />
+                    android:textSize="22dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_post_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="20dp"
+                    android:text="           "
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
-                    android:id="@+id/layout_info"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_post_image"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/iv_post_image"
-                    app:layout_constraintTop_toBottomOf="@id/tv_post_nickname">
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:id="@+id/iv_post_image1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:visibility="gone" />
 
                     <TextView
-                        android:id="@+id/tv_post_category"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tv_post_image1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="        " />
+                        android:layout_marginTop="7dp"
+                        android:layout_marginBottom="15dp"
+                        android:visibility="gone" />
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:background="#DDDDDD" />
+                    <ImageView
+                        android:id="@+id/iv_post_image2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:visibility="gone" />
 
                     <TextView
-                        android:id="@+id/tv_post_timestamp"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tv_post_image2"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="              " />
+                        android:layout_marginTop="7dp"
+                        android:layout_marginBottom="15dp"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/iv_post_image3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_post_image3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginBottom="15dp"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/iv_post_image4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_post_image4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginBottom="15dp"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/iv_post_image5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_post_image5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginBottom="15dp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/btn_mypost"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_meatball_black_24dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <!--                <ImageButton-->
-                <!--                    android:id="@+id/btn_like"-->
-                <!--                    android:layout_width="40dp"-->
-                <!--                    android:layout_height="40dp"-->
-                <!--                    app:layout_constraintTop_toTopOf="parent"-->
-                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--                    app:layout_constraintEnd_toStartOf="@id/btn_scrap"-->
-                <!--                    android:src="@drawable/like_empty_icon"-->
-                <!--                    android:layout_marginRight="5dp"-->
-                <!--                    android:background="@android:color/transparent"/>-->
-
-                <!--                <ImageButton-->
-                <!--                    android:id="@+id/btn_scrap"-->
-                <!--                    android:layout_width="40dp"-->
-                <!--                    android:layout_height="40dp"-->
-                <!--                    app:layout_constraintTop_toTopOf="parent"-->
-                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    android:src="@drawable/star_empty_icon"-->
-                <!--                    android:background="@android:color/transparent"/>-->
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/tv_post_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:text="          "
-                android:textColor="@android:color/black"
-                android:textSize="22sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tv_post_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:paddingLeft="20dp"
-                android:text="           "
-                android:textSize="18sp"
-                android:textStyle="bold"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <ImageView
-                    android:id="@+id/iv_post_image1"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:visibility="gone" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
 
-                <TextView
-                    android:id="@+id/tv_post_image1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:layout_marginBottom="15dp"
-                    android:visibility="gone" />
+                    <!--댓글창-->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
-                <ImageView
-                    android:id="@+id/iv_post_image2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_post_image2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:layout_marginBottom="15dp"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/iv_post_image3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_post_image3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:layout_marginBottom="15dp"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/iv_post_image4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_post_image4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:layout_marginBottom="15dp"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/iv_post_image5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_post_image5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:layout_marginBottom="15dp"
-                    android:visibility="gone" />
+                </RelativeLayout>
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+        </ScrollView>
 
-                <!--댓글창-->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_comment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Layout_add_comment"
@@ -320,7 +328,7 @@
             android:ems="10"
             android:hint="댓글 입력"
             android:inputType="textPersonName"
-            android:textSize="13sp"
+            android:textSize="13dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_add_comment"
             app:layout_constraintStart_toEndOf="@+id/comment_user_image"
