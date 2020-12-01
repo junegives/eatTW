@@ -5,24 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".Activity.MyProfileActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/ll_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bottom_bar"
         android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/arrow_back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="마이페이지"
+            android:text="프로필"
             android:textColor="@android:color/black"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -36,7 +47,7 @@
             android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
+                android:id="@+id/main_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bottom_bar_padding"
@@ -54,7 +65,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/mypage_profile_img"
+                    android:id="@+id/profile_img"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
                     android:src="@drawable/mandoo_profile"
@@ -71,15 +82,15 @@
                     android:textColor="@android:color/black"
                     android:textSize="20dp"
                     app:layout_constraintBottom_toTopOf="@id/layout_follower"
-                    app:layout_constraintStart_toEndOf="@id/mypage_profile_img"
-                    app:layout_constraintTop_toTopOf="@id/mypage_profile_img" />
+                    app:layout_constraintStart_toEndOf="@id/profile_img"
+                    app:layout_constraintTop_toTopOf="@id/profile_img" />
 
                 <LinearLayout
                     android:id="@+id/layout_follower"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="@id/mypage_profile_img"
+                    app:layout_constraintBottom_toBottomOf="@id/profile_img"
                     app:layout_constraintStart_toStartOf="@id/tv_nickname"
                     app:layout_constraintTop_toBottomOf="@+id/tv_nickname">
 
@@ -107,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="@id/mypage_profile_img"
+                    app:layout_constraintBottom_toBottomOf="@id/profile_img"
                     app:layout_constraintStart_toEndOf="@+id/layout_follower"
                     app:layout_constraintTop_toBottomOf="@+id/tv_nickname">
 
@@ -129,16 +140,7 @@
 
                 </LinearLayout>
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!--    <Button-->
-            <!--        android:id="@+id/btn_rules"-->
-            <!--        android:layout_width="match_parent"-->
-            <!--        android:layout_height="wrap_content"-->
-            <!--        app:layout_constraintBottom_toTopOf="@id/btn_logout"-->
-            <!--        android:background="@android:color/white"-->
-            <!--        android:text="이용 약관 및 개인정보 처리방침"/>-->
 
             <LinearLayout
                 android:id="@+id/btn_interation"
@@ -148,9 +150,10 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/constraintLayout">
+                app:layout_constraintTop_toBottomOf="@id/main_profile">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/ll_chatting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -167,76 +170,13 @@
 
                     <TextView
                         android:id="@+id/tv_chatting"
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:text="채팅 목록"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/img_chatting"
-                        android:gravity="center_horizontal" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="#DDDDDD" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/ll_modify"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="10dp">
-
-                    <ImageView
-                        android:id="@+id/img_modify"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_modify_646464_24dp"
+                        android:gravity="center_horizontal"
+                        android:text="채팅 목록 보기"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_modify"
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:text="프로필 수정"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/img_modify"
-                        android:gravity="center_horizontal" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/ll_follow_cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="10dp"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/img_unfollow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/follow"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_unfollow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="팔로우 취소"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/img_unfollow" />
+                        app:layout_constraintTop_toBottomOf="@+id/img_chatting" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -329,37 +269,99 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
-                android:visibility="gone"
                 android:text="번역"
                 android:textSize="15dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btn_scrap_store" />
 
             <TextView
                 android:id="@+id/btn_translation_scrap"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
                 android:text="저장한 번역"
                 android:textColor="@android:color/black"
+                android:visibility="gone"
                 android:textSize="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_translation" />
 
-            <Button
-                android:id="@+id/btn_logout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:text="로그아웃"
-                android:textColor="@android:color/holo_red_dark"
-                app:layout_constraintTop_toBottomOf="@id/btn_translation_scrap" />
+            <!--        <LinearLayout-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:orientation="horizontal"-->
+            <!--            app:layout_constraintEnd_toEndOf="parent"-->
+            <!--            app:layout_constraintStart_toStartOf="parent"-->
+            <!--            app:layout_constraintTop_toBottomOf="@+id/tv_community"-->
+            <!--            android:background="@drawable/bottom_bar"-->
+            <!--            android:padding="10dp">-->
+
+            <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_weight="1">-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text="게시글"-->
+            <!--                    android:textSize="16dp"-->
+            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                    app:layout_constraintStart_toStartOf="parent"-->
+            <!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+            <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_weight="1">-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text="댓글"-->
+            <!--                    android:textSize="16dp"-->
+            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                    app:layout_constraintStart_toStartOf="parent"-->
+            <!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+            <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_weight="1">-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text="스크랩"-->
+            <!--                    android:textSize="16dp"-->
+            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                    app:layout_constraintStart_toStartOf="parent"-->
+            <!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+            <!--        </LinearLayout>-->
+
+
+            <!--    <Button-->
+            <!--        android:id="@+id/btn_rules"-->
+            <!--        android:layout_width="match_parent"-->
+            <!--        android:layout_height="wrap_content"-->
+            <!--        app:layout_constraintBottom_toTopOf="@id/btn_logout"-->
+            <!--        android:background="@android:color/white"-->
+            <!--        android:text="이용 약관 및 개인정보 처리방침"/>-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
 
 </LinearLayout>

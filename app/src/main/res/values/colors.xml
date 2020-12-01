@@ -4,4 +4,41 @@
     <!--<color name="colorPrimaryDark">#3700B3</color>-->
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="t">#B1BF4D</color>
+    <color name="y">#7BC7A9</color>
+    <color name="u">#4F98B9</color>
+    <color name="i">#9BACBE</color>
+    <color name="ii">#C4D0DC</color>
+
+
+    <color name="q">#F6D305</color>
+    <color name="w">#E7B90E</color>
+    <color name="e">#2663A2</color>
+    <color name="r">#398AB9</color>
+
+
+    <color name="a">#E9EDB0</color>
+    <color name="b">#BBCE51</color>
+    <color name="c">#02ABB2</color>
+    <color name="d">#7FD4D1</color>
+
+    <color name="swarmColor">#E6522D</color>
+
+    <color name="cursorColor">#ffb65d</color>
+    <color name="nomalColor">#ffcd54</color>
+    <color name="midPink">#FF80E6</color>
+    <color name="selectPink">#FA39CA</color>
+    <color name="mainPink">#FF4081</color>
+    <color name="nomalPink">#FF5D94</color>
+    <color name="nomalPinksel">#9AFF5D94</color>
+    <color name="black">#000000</color>
+    <color name="dark_gray">#333333</color>
+    <color name="gray">#C8C8C8</color>
+    <color name="white_gray">#EDEDED</color>
+    <color name="puple">#8340FD</color>
+    <color name="white">#ffffff</color>
+    <color name="red">#ff0000</color>
+
+    <color name="sns">#3793F1</color>
 </resources>

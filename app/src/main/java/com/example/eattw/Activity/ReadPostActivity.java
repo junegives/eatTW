@@ -14,10 +14,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +56,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +74,7 @@ public class ReadPostActivity extends AppCompatActivity {
     private View view;
     private Date bundleID;
     private int depth;
-    private String userID="";
+    private String userID = "";
 
     private static final String TAG = "ReadPostActivity";
 
@@ -83,6 +88,9 @@ public class ReadPostActivity extends AppCompatActivity {
 
     private ArrayList<String> ImageList;
     private ArrayList<String> DesList;
+    private ImageButton btn_community_write;
+
+    private ConstraintLayout layout_header;
 
     private ImageView iv_post_image;
     private TextView tv_post_nickname;
@@ -137,14 +145,13 @@ public class ReadPostActivity extends AppCompatActivity {
         firebaseAuth = firebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-        Log.d("errorTAG", "3");
 
         dialog = new ProgressDialog(this);
         dialog.setMessage("불러오는중...");
         dialog.setCancelable(true);
         dialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
 
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_read_post);
+        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_read_post);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -156,21 +163,17 @@ public class ReadPostActivity extends AppCompatActivity {
             }
         });
 
-        ll = (ConstraintLayout)findViewById(R.id.ll);
-        controlManager = (InputMethodManager)getSystemService(Service.INPUT_METHOD_SERVICE);
+        ll = (ConstraintLayout) findViewById(R.id.ll);
+        controlManager = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
         softKeyboard = new SoftKeyboard(ll, controlManager);
-        softKeyboard.setSoftKeyboardCallback(new SoftKeyboard.SoftKeyboardChanged()
-        {
+        softKeyboard.setSoftKeyboardCallback(new SoftKeyboard.SoftKeyboardChanged() {
             @Override
-            public void onSoftKeyboardHide()
-            {
-                new Handler(Looper.getMainLooper()).post(new Runnable()
-                {
+            public void onSoftKeyboardHide() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         //키보드 내려갔을때
-                        if(view != null) {
+                        if (view != null) {
                             view.setBackgroundResource(R.drawable.comment_list);
                             if (et_comment.getText().length() > 0) {
                                 showAlert();
@@ -184,16 +187,13 @@ public class ReadPostActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSoftKeyboardShow()
-            {
-                new Handler(Looper.getMainLooper()).post(new Runnable()
-                {
+            public void onSoftKeyboardShow() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         //키보드 올라왔을때
                         //scrollView.scrollTo(0, view.getTop() - 100);
-                        if(view != null) {
+                        if (view != null) {
                             view.setBackgroundResource(R.drawable.comment_selected);
                             if (et_comment.getText().length() > 0) {
                                 showAlert();
@@ -240,8 +240,7 @@ public class ReadPostActivity extends AppCompatActivity {
     }*/
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         softKeyboard.closeSoftKeyboard();
         softKeyboard.unRegisterSoftKeyboardCallback();
@@ -258,23 +257,58 @@ public class ReadPostActivity extends AppCompatActivity {
 
         commentAdapter.setOnItemClickListener(new CommentAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick_mycomment(int position) {
-                mycomment(position);
+            public void onItemClick_mycomment(View modify_layout, int position, TextView modify_to_username, EditText modfiy_message, Button modfiy_ok, Button modify_cancel) {
+                mycomment(modify_layout, position, modify_to_username, modfiy_message, modfiy_ok, modify_cancel);
             }
 
             public void onItemClick_recomment(View view, int position, int depth, String userID, Date bundleID) {
                 reply(view, position, depth, userID, bundleID);
             }
         });
-}
+    }
 
-    public void mycomment(final int position) {
+    public void mycomment(final View modify_layout, final int position, final TextView modify_to_username, final EditText modfiy_message, final Button modfiy_ok, final Button modfiy_cancel) {
         Log.d("CommentTest", "position : " + position);
         bottomSheetDialog_comment.show();
         btn_mycomment_modfiy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bottomSheetDialog_comment.dismiss();
+                modify_layout.setVisibility(View.VISIBLE);
+                modfiy_message.setText(commentList.get(position).getComment());
+
+                modfiy_ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        db.collection("Posts/" + postID + "/Comments").document(commentList.get(position).getCommentID())
+                                .update("comment", modfiy_message.getText().toString())
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                        Toast.makeText(ReadPostActivity.this, "댓글이 수정되었습니다", Toast.LENGTH_SHORT).show();
+                                        commentList.get(position).setComment(modfiy_message.getText().toString());
+                                        commentAdapter.notifyDataSetChanged();
+                                        modify_layout.setVisibility(View.GONE);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error deleting document", e);
+                                        Toast.makeText(ReadPostActivity.this, "댓글 수정 실패", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                    }
+                });
+
+                modfiy_cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        modify_layout.setVisibility(View.GONE);
+                    }
+                });
             }
         });
         btn_mycomment_delete.setOnClickListener(new View.OnClickListener() {
@@ -304,7 +338,7 @@ public class ReadPostActivity extends AppCompatActivity {
         });
     }
 
-    public void reply(final View view, final int position, int depth, String userID, Date bundleID){
+    public void reply(final View view, final int position, int depth, String userID, Date bundleID) {
         Log.d("ReplyTest", "position : " + position);
         this.view = view;
         this.depth = 1;
@@ -389,32 +423,37 @@ public class ReadPostActivity extends AppCompatActivity {
         Log.d("getDataTest", "getCommentData()");
         db.collection("Posts/" + postID + "/Comments").orderBy("bundleID").orderBy("timestamp").get().
                 addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("CommentTestAdd", document.getId() + " => " + document.getData());
-                        commentList.add(new CommentInfo(
-                                document.getId(),
-                                document.getData().get("postID").toString(),
-                                document.getData().get("userID").toString(),
-                                document.getData().get("comment").toString(),
-                                document.getLong("like").intValue(),
-                                new Date(document.getDate("timestamp").getTime()),
-                                document.getData().get("reply_userID").toString(),
-                                document.getLong("depth").intValue(),
-                                new Date(document.getDate("bundleID").getTime()),
-                                document.getBoolean("deleted").booleanValue()));
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("CommentTestAdd", document.getId() + " => " + document.getData());
+                                commentList.add(new CommentInfo(
+                                        document.getId(),
+                                        document.getData().get("postID").toString(),
+                                        document.getData().get("userID").toString(),
+                                        document.getData().get("comment").toString(),
+                                        document.getLong("like").intValue(),
+                                        new Date(document.getDate("timestamp").getTime()),
+                                        document.getData().get("reply_userID").toString(),
+                                        document.getLong("depth").intValue(),
+                                        new Date(document.getDate("bundleID").getTime()),
+                                        document.getBoolean("deleted").booleanValue()));
+                            }
+                        }
+                        commentAdapter.notifyDataSetChanged();
                     }
-                }
-                commentAdapter.notifyDataSetChanged();
-            }
-        });
+                });
     }
 
     public void updateUI() {
 
         Log.d("errorTAG", "7");
+
+        layout_header = (ConstraintLayout) findViewById(R.id.layout_header);
+
+        btn_community_write = (ImageButton) findViewById(R.id.btn_community_write);
+        btn_community_write.setOnClickListener(onClickListener);
 
         iv_post_image = (ImageView) findViewById(R.id.iv_post_image);
         tv_post_nickname = (TextView) findViewById(R.id.tv_post_nickname);
@@ -540,6 +579,12 @@ public class ReadPostActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
+                case R.id.btn_community_write:
+                    Intent intent = new Intent(ReadPostActivity.this, WritePostActivity.class);
+                    startActivity(intent);
+                    finish();
+                    break;
+
                 case R.id.btn_mypost:
                     bottomSheetDialog.show();
                     break;
@@ -555,7 +600,7 @@ public class ReadPostActivity extends AppCompatActivity {
                     break;
 
                 case R.id.btn_add_comment:
-                    if(depth == 0){
+                    if (depth == 0) {
                         bundleID = new Date();
                     }
                     addComment();
@@ -583,7 +628,7 @@ public class ReadPostActivity extends AppCompatActivity {
                         Toast.makeText(ReadPostActivity.this, "Error Posting Comment: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         et_comment.setText(comment);
                         //알람 보내기
-                        if(!commentInfo.getReply_userID().equals("")){
+                        if (!commentInfo.getReply_userID().equals("")) {
 
                         }
                     } else {
@@ -646,4 +691,82 @@ public class ReadPostActivity extends AppCompatActivity {
         builder.show();
 
     }
+
+    public void showProfile(View view) {
+        if (user.getUid().equals(userInfo.getUserID())) {
+            startActivityObject(MyProfileActivity.class, "userInfo", userInfo);
+        } else {
+            startActivityObject(ProfileActivity.class, "userInfo", userInfo);
+        }
+    }
+
+
+    // 액티비티 전환 함수
+
+    // 인텐트 액티비티 전환함수
+    public void startActivityC(Class c) {
+        Intent intent = new Intent(getApplicationContext(), c);
+        startActivity(intent);
+        // 화면전환 애니메이션 없애기
+        overridePendingTransition(0, 0);
+    }
+
+    // 인텐트 화면전환 하는 함수
+    // FLAG_ACTIVITY_CLEAR_TOP = 불러올 액티비티 위에 쌓인 액티비티 지운다.
+    public void startActivityflag(Class c) {
+        Intent intent = new Intent(getApplicationContext(), c);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        // 화면전환 애니메이션 없애기
+        overridePendingTransition(0, 0);
+    }
+
+    // 문자열 인텐트 전달 함수
+    public void startActivityString(Class c, String name, String sendString) {
+        Intent intent = new Intent(getApplicationContext(), c);
+        intent.putExtra(name, sendString);
+        startActivity(intent);
+        // 화면전환 애니메이션 없애기
+        overridePendingTransition(0, 0);
+    }
+
+    // 객체 인텐트 전달 함수
+    public void startActivityObject(Class c, String name, UserInfo sendItem) {
+        Intent intent = new Intent(getApplicationContext(), c);
+        intent.putExtra(name, sendItem);
+        startActivity(intent);
+        // 화면전환 애니메이션 없애기
+        overridePendingTransition(0, 0);
+    }
+
+    // 백스택 지우고 새로 만들어 전달
+    public void startActivityNewTask(Class c) {
+        Intent intent = new Intent(getApplicationContext(), c);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        // 화면전환 애니메이션 없애기
+        overridePendingTransition(0, 0);
+    }
+
+    // 쉐어드 함수정의
+    public void updateSharedString(String key, String value) {
+        SharedPreferences prefs = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    public String getSharedString(String key) {
+        SharedPreferences prefs = getSharedPreferences("pref", MODE_PRIVATE);
+        String result = prefs.getString(key, "null");
+        return result;
+    }
+
+    public void deleteShared(String key) {
+        SharedPreferences prefs = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(key);
+        editor.commit();
+    }
+
 }

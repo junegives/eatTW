@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PostInfo  implements Serializable {
+public class PostInfo implements Serializable {
     private String postID;
     private String category;
     private String title;

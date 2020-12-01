@@ -9,8 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,7 +47,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private Context context;
 
     public interface OnItemClickListener {
-        void onItemClick_mycomment(int position);
+        void onItemClick_mycomment(View view, int position, TextView modify_to_username, EditText modify_message, Button modfiy_ok, Button modify_cancel);
+
         void onItemClick_recomment(View view, int position, int depth, String userID, Date bundleID);
     }
 
@@ -69,6 +73,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         TextView cnt_like;
         ImageButton btn_mycomment;
         TextView btn_recomment;
+        LinearLayout modify_layout;
+        TextView modify_to_username;
+        EditText modify_message;
+        Button modfiy_ok;
+        Button modfiy_cancel;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -81,6 +90,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             btn_recomment = itemView.findViewById(R.id.btn_recomment);
             btn_like = itemView.findViewById(R.id.btn_like);
             cnt_like = itemView.findViewById(R.id.cnt_like);
+            modify_layout = itemView.findViewById(R.id.modify_layout);
+            modify_to_username = itemView.findViewById(R.id.modify_to_username);
+            modify_message = itemView.findViewById(R.id.modify_message);
+            modfiy_ok = itemView.findViewById(R.id.modify_ok);
+            modfiy_cancel = itemView.findViewById(R.id.modify_cancel);
         }
     }
 
@@ -106,20 +120,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         Log.d("UserNamememe", "commentInfo 충전");
 
         holder.btn_mycomment.setVisibility(View.GONE);
+        holder.modify_layout.setVisibility(View.GONE);
 
         TimeCaculator timeCaculator = new TimeCaculator();
         holder.comment_timestamp.setText(
                 timeCaculator.beforeTime(commentInfo.getTimestamp()));
 
-        if(commentInfo.isDeleted()){
+        if (commentInfo.isDeleted()) {
             holder.btn_recomment.setVisibility(View.INVISIBLE);
-            if(commentInfo.getDepth() != 0){
+            if (commentInfo.getDepth() != 0) {
                 RecyclerView.LayoutParams mLayoutParams = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
                 mLayoutParams.leftMargin = 100;
                 holder.itemView.setLayoutParams(mLayoutParams);
                 holder.itemView.setBackgroundResource(android.R.color.white);
-            }
-            else{
+            } else {
                 RecyclerView.LayoutParams mLayoutParams = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
                 mLayoutParams.leftMargin = 0;
                 holder.itemView.setLayoutParams(mLayoutParams);
@@ -128,9 +142,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             holder.comment_message.setText("(삭제한 댓글입니다)");
             holder.comment_username.setText("삭제한 댓글");
             holder.comment_image.setColorFilter(R.color.colorPrimaryDark);
-        }
-
-        else {
+        } else {
 
             getUserData(holder.comment_image, holder.comment_username);
 
@@ -156,8 +168,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             holder.btn_mycomment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener != null){
-                        mListener.onItemClick_mycomment(position);
+                    modify_comment(position, mDataset.get(position), holder.modify_to_username);
+                    if (mListener != null) {
+                        mListener.onItemClick_mycomment(holder.modify_layout, position, holder.modify_to_username, holder.modify_message, holder.modfiy_ok, holder.modfiy_cancel);
                     }
                 }
             });
@@ -165,28 +178,69 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             holder.btn_recomment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mListener != null){
-                        Log.d("Commentetete", "버튼 눌렀당 눌린 사람이 쓴 댓글은 "+commentInfo.getComment() + "\n눌린 position은" + position);
+                    if (mListener != null) {
+                        Log.d("Commentetete", "버튼 눌렀당 눌린 사람이 쓴 댓글은 " + commentInfo.getComment() + "\n눌린 position은" + position);
                         mListener.onItemClick_recomment(holder.itemView, position, mDataset.get(position).getDepth(), mDataset.get(position).getUserID(), mDataset.get(position).getBundleID());
                     }
+                }
+            });
+
+            holder.modfiy_ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.modify_message.getText().length() < 0) {
+                        holder.modify_message.setError("댓글 입력란이 비었습니다");
+                    } else {
+
+                    }
+                }
+            });
+
+            holder.modfiy_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
                 }
             });
         }
     }
 
-    public void getUsername(final TextView comment_messeage, final CommentInfo com){
+    public void modify_comment(int position, final CommentInfo com, final TextView modify_to_username) {
+        if (com.getReply_userID().equals("")) {
+            modify_to_username.setVisibility(View.GONE);
+        } else {
+            db.collection("Users").document(com.getReply_userID()).get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                modify_to_username.setVisibility(View.VISIBLE);
+                                if (document.exists()) {
+                                    Log.d("UserNamememe", document.getData().get("nickname").toString());
+                                    modify_to_username.setText(document.getData().get("nickname").toString() + "님에게");
+                                    Log.d("UserNamememe", com.getComment());
+                                } else {
+                                    modify_to_username.setText("존재하지 않는 회원\t" + com.getComment());
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void getUsername(final TextView comment_messeage, final CommentInfo com) {
         db.collection("Users").document(com.getReply_userID()).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            if(document.exists()){
-                                Log.d("UserNamememe" , document.getData().get("nickname").toString());
+                            if (document.exists()) {
+                                Log.d("UserNamememe", document.getData().get("nickname").toString());
                                 comment_messeage.setText(document.getData().get("nickname").toString() + "님에게\n" + com.getComment());
                                 Log.d("UserNamememe", com.getComment());
-                            }
-                            else{
+                            } else {
                                 comment_messeage.setText("존재하지 않는 회원\t" + com.getComment());
                             }
                         }

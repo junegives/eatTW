@@ -1,8 +1,9 @@
 package com.example.eattw.Item;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class CommentInfo {
+public class CommentInfo implements Serializable {
     private String commentID;
     private String postID;
     private String userID;

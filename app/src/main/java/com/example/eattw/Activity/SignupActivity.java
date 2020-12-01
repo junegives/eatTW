@@ -3,7 +3,10 @@ package com.example.eattw.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +23,15 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import dmax.dialog.SpotsDialog;
+
 public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SingupActivity";
@@ -27,6 +39,10 @@ public class SignupActivity extends AppCompatActivity {
     private EditText et_password_signup;
     private EditText et_password_check_signup;
     FirebaseAuth firebaseAuth;
+
+    private AlertDialog waitingDialog;
+
+    private static String IP_ADDRESS = "54.180.82.230";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +57,12 @@ public class SignupActivity extends AppCompatActivity {
 
         findViewById(R.id.btn_signup).setOnClickListener(onClickListener);
         findViewById(R.id.btn_login_go).setOnClickListener(onClickListener);
+
+        waitingDialog = new SpotsDialog.Builder()
+                .setCancelable(false)
+                .setMessage("잠시만 기다려주세요")
+                .setContext(this)
+                .build();
     }
 
 
@@ -87,20 +109,22 @@ public class SignupActivity extends AppCompatActivity {
             et_password_check_signup.setError("비밀번호 확인란을 입력하세요");
             et_password_check_signup.requestFocus();
         } else {
+            waitingDialog.show();
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             //성공했을 때
                             if (task.isSuccessful()) {
+
+                                InsertData tasking = new InsertData();
+                                tasking.execute("http://" + IP_ADDRESS + "/eatTW/insert_user.php", email);
+
                                 Log.d(TAG, "createUserWithEmail:success");
-                                Toast.makeText(SignupActivity.this, "가입 성공", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
                             }
                             //실패했을 때
                             else {
+                                waitingDialog.dismiss();
                                 try {
                                     throw task.getException();
                                 } catch (FirebaseNetworkException e) {
@@ -108,17 +132,107 @@ public class SignupActivity extends AppCompatActivity {
                                 } catch (FirebaseAuthUserCollisionException e) {
                                     et_email_signup.setError("이미 사용중인 이메일입니다.");
                                     et_email_signup.requestFocus();
-                                } catch (FirebaseAuthInvalidCredentialsException e){
+                                } catch (FirebaseAuthInvalidCredentialsException e) {
                                     et_email_signup.setError("이메일 형식이 올바르지 않습니다.");
                                     et_email_signup.requestFocus();
-                                }
-                                catch (Exception e) {
+                                } catch (Exception e) {
                                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                     Toast.makeText(SignupActivity.this, "가입 실패", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
                     });
+        }
+    }
+    class InsertData extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+//            progressDialog = ProgressDialog.show(SignupActivity.this,
+//                    "Please Wait", null, true, true);
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            waitingDialog.dismiss();
+            Toast.makeText(SignupActivity.this, "가입 성공", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            //mTextViewResult.setText(result);
+            Log.d(TAG+"_", "POST response  - " + result);
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String userID = (String)params[1];
+            Log.d("WTF", userID);
+
+            String serverURL = (String)params[0];
+            String postParameters = "userID=" + userID;
+
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG+"_", "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG+"_", "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
         }
     }
 }

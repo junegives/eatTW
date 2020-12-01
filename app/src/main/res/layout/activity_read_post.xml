@@ -46,7 +46,8 @@
             android:tint="@android:color/tab_indicator_text"
             app:layout_constraintBottom_toBottomOf="@id/tv_community_title"
             app:layout_constraintEnd_toStartOf="@id/btn_community_write"
-            app:layout_constraintTop_toTopOf="@id/tv_community_title" />
+            app:layout_constraintTop_toTopOf="@id/tv_community_title"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/btn_community_write"
@@ -87,6 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/white"
+                    android:onClick="showProfile"
                     android:padding="15dp">
 
                     <ImageView

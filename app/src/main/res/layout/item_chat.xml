@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:id="@+id/layout_you"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+
+        <TextView
+            android:id="@+id/nickname_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="          "
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/bubble_you_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/you_bubble"
+            android:text="sadfasdfasdfasdfasdfasdfasdf\nasdfasdfasdfasdfas"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:padding="10dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_margin="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_me"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/bubble_me_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/me_bubble"
+            android:text="sadfasddfdfsdfasdf\nsdaffdffa"
+            android:textSize="17dp"
+            android:textColor="@android:color/white"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_margin="10dp"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+</LinearLayout>

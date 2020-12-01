@@ -1,6 +1,8 @@
 package com.example.eattw.Item;
 
-public class UserInfo {
+import java.io.Serializable;
+
+public class UserInfo implements Serializable {
     private String userID;
     private String nickname;
     private String photoUrl;

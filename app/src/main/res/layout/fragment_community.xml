@@ -41,7 +41,8 @@
             android:layout_marginRight="10dp"
             android:src="@drawable/ic_search_black_24dp"
             android:tint="@android:color/tab_indicator_text"
-            android:background="@null"/>
+            android:background="@null"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/btn_community_write"

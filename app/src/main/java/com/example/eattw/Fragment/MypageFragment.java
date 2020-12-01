@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -38,7 +39,7 @@ public class MypageFragment  extends Fragment {
     private LinearLayout layout_following;
     private TextView tv_follwing;
 
-    private ImageButton btn_change_profile;
+    private ConstraintLayout ll_modify;
 
     private Button btn_logout;
 
@@ -71,7 +72,7 @@ public class MypageFragment  extends Fragment {
         tv_follower = (TextView)view.findViewById(R.id.tv_follower);
         layout_following = (LinearLayout)view.findViewById(R.id.layout_following);
         tv_follwing = (TextView)view.findViewById(R.id.tv_following);
-        btn_change_profile = (ImageButton)view.findViewById(R.id.btn_change_profile);
+        ll_modify = (ConstraintLayout)view.findViewById(R.id.ll_modify);
         btn_logout = (Button)view.findViewById(R.id.btn_logout);
 
         layout_follower.setOnClickListener(new View.OnClickListener(){
@@ -90,7 +91,7 @@ public class MypageFragment  extends Fragment {
             }
         });
 
-        btn_change_profile.setOnClickListener(new View.OnClickListener() {
+        ll_modify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ProfilemodifyActivity.class);
